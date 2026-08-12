@@ -1,0 +1,6 @@
+{
+  "name": "PairLink",
+  "description": "A private digital sanctuary for couples to connect, share moods, track milestones, and send love pulses.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

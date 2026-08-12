@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Manrope', sans-serif;
+    background-color: #0b1326;
+    color: #dae2fd;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-display {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+/* Material Symbols Outlined settings */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+.material-symbols-outlined.fill-icon,
+.material-symbols-outlined[data-weight="fill"] {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel, .glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #dae2fd;
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #f4a7b9;
+  box-shadow: 0 0 16px rgba(244, 167, 185, 0.3);
+  outline: none;
+}
+
+.glass-input::placeholder {
+  color: rgba(214, 193, 197, 0.5);
+}
+
+/* Glowing Buttons & Aura */
+.glow-button {
+  box-shadow: 0 0 16px rgba(244, 167, 185, 0.4);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glow-button:hover {
+  box-shadow: 0 0 24px rgba(244, 167, 185, 0.7);
+  transform: translateY(-2px);
+}
+
+.glow-aura {
+  box-shadow: 0 0 40px rgba(244, 167, 185, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.glow-effect {
+  box-shadow: 0 0 20px rgba(244, 167, 185, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Custom Calendar Picker Icon */
+::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(0.6);
+  cursor: pointer;
+}
+
+/* Floating Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.float-1 { animation: float 4s ease-in-out infinite; }
+.float-2 { animation: float 5s ease-in-out infinite 1s; }
+.float-3 { animation: float 6s ease-in-out infinite 2s; }
+.float-4 { animation: float 4.5s ease-in-out infinite 0.5s; }
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(244,167,185,0.4); transform: scale(1); }
+  50% { box-shadow: 0 0 32px rgba(244,167,185,0.8); transform: scale(1.05); }
+}
+
+.animate-heart-pulse {
+  animation: pulse-glow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes float-heart-anim {
+  0% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-20px) scale(1.1); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 0.8; }
+}
+
+.floating-heart {
+  animation: float-heart-anim 6s ease-in-out infinite;
+}
+
+@keyframes pulse-radiance {
+  0%, 100% { opacity: 0.15; transform: scale(1); filter: blur(80px); }
+  50% { opacity: 0.35; transform: scale(1.1); filter: blur(100px); }
+}
+
+.animate-radiance {
+  animation: pulse-radiance 6s ease-in-out infinite;
+}
+
+/* Modal Entrance Animation */
+@keyframes fadeInScale {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.modal-animate {
+  animation: fadeInScale 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Mood Chip Active */
+.mood-chip {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mood-chip.selected {
+  background-color: rgba(244, 167, 185, 0.25) !important;
+  border-color: rgba(244, 167, 185, 0.6) !important;
+  box-shadow: 0 0 20px rgba(244, 167, 185, 0.4) !important;
+}
+
+.mood-chip.selected .material-symbols-outlined {
+  font-variation-settings: 'FILL' 1;
+  color: #ffcbd5;
+}
+
+.mood-chip.selected span {
+  color: #ffcbd5;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(11, 19, 38, 0.6);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 167, 185, 0.4);
+}
+

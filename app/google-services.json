@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "717519274347",
+    "project_id": "pairlink-aaadc",
+    "storage_bucket": "pairlink-aaadc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717519274347:android:02b690e00b3fb8cdc40c2e",
+        "android_client_info": {
+          "package_name": "com.pairlink.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDL55hVcVwG7yImetRuIQpDZMRDqh_vblI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
