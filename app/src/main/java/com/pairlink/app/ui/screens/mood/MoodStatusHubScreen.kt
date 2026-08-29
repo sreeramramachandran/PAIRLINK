@@ -133,12 +133,20 @@ fun MoodStatusHubScreen(
                                             .border(1.dp, DesignTokens.Colors.PrimaryPink.copy(alpha = 0.4f), CircleShape),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Mood,
-                                            contentDescription = "Mood Icon",
-                                            tint = DesignTokens.Colors.PrimaryPink,
-                                            modifier = Modifier.size(24.dp)
-                                        )
+                                        if (user.currentMoodStickerUrl.isNotBlank()) {
+                                            com.pairlink.app.ui.components.AnimatedStickerImage(
+                                                stickerUrl = user.currentMoodStickerUrl,
+                                                emojiFallback = "💖",
+                                                modifier = Modifier.size(32.dp)
+                                            )
+                                        } else {
+                                            Icon(
+                                                imageVector = Icons.Default.Mood,
+                                                contentDescription = "Mood Icon",
+                                                tint = DesignTokens.Colors.PrimaryPink,
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        }
                                     }
 
                                     Column {
@@ -242,12 +250,20 @@ fun MoodStatusHubScreen(
                                             .border(1.dp, Color(0xFFFFB3C1), CircleShape),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(
-                                            imageVector = statusIcon,
-                                            contentDescription = "Status Icon",
-                                            tint = DesignTokens.Colors.PrimaryPink,
-                                            modifier = Modifier.size(24.dp)
-                                        )
+                                        if (user.currentStatusStickerUrl.isNotBlank()) {
+                                            com.pairlink.app.ui.components.AnimatedStickerImage(
+                                                stickerUrl = user.currentStatusStickerUrl,
+                                                emojiFallback = "📍",
+                                                modifier = Modifier.size(36.dp)
+                                            )
+                                        } else {
+                                            Icon(
+                                                imageVector = statusIcon,
+                                                contentDescription = "Status Icon",
+                                                tint = DesignTokens.Colors.PrimaryPink,
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        }
                                     }
 
                                     Column {

@@ -65,4 +65,10 @@ abstract class RepositoryModule {
     abstract fun bindNotificationRepository(
         roomNotificationRepository: RoomNotificationRepository
     ): NotificationRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindWeatherRepository(
+        openMeteoWeatherRepository: com.pairlink.app.data.repository.OpenMeteoWeatherRepository
+    ): com.pairlink.app.data.repository.WeatherRepository
 }

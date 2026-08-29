@@ -12,6 +12,7 @@ interface StatusRepository {
     val lastUpdatedText: StateFlow<String>
     val availableStatuses: StateFlow<List<StatusItem>>
     suspend fun setStatus(status: String, message: String? = null): Result<Unit>
+    suspend fun setStatusSticker(stickerUrl: String, stickerId: String): Result<Unit>
     suspend fun addCustomStatus(status: String, emoji: String? = null): Result<Unit>
     suspend fun deleteCustomStatus(statusId: String): Result<Unit>
     fun observePartnerStatus(): Flow<Pair<String, String>>

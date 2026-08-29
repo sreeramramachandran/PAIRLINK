@@ -125,6 +125,37 @@ class FirebasePartnerRepository @Inject constructor(
                     ),
                     SetOptions.merge()
                 ).await()
+
+                // Trigger background / lockscreen push notification for partner
+                val notifId = "pulse_${now}_${(100..999).random()}"
+                val senderName = authRepository.currentUser.value.username.ifBlank { "Partner" }
+                val title = "❤️ $senderName sent you a Love Beat!"
+                val notifMessage = "A warm burst of affection was sent to your sanctuary. 💓"
+
+                firestore.collection("notifications").document(notifId).set(
+                    mapOf(
+                        "id" to notifId,
+                        "title" to title,
+                        "message" to notifMessage,
+                        "type" to "PRESENCE",
+                        "senderUid" to currentUid,
+                        "receiverUid" to partner.id,
+                        "iconName" to "favorite",
+                        "timestamp" to now,
+                        "read" to false
+                    ),
+                    SetOptions.merge()
+                )
+
+                // High priority FCM push transmission to wake display screen & vibrate partner device
+                com.pairlink.app.core.util.FcmPushHelper.sendPushNotificationToPartner(
+                    partnerUid = partner.id,
+                    title = title,
+                    message = notifMessage,
+                    type = "PRESENCE",
+                    senderUid = currentUid,
+                    iconName = "favorite"
+                )
             } catch (e: Exception) {
                 Timber.w(e, "Could not sync heart pulse to Firestore")
             }

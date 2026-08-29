@@ -269,6 +269,38 @@ class FirebaseAuthRepository @Inject constructor(
                     SetOptions.merge()
                 ).await()
                 Timber.i("Profile updated in Firestore: %s", updateMap.keys)
+
+                // Send profile picture update notification to partner
+                if (!avatarUrl.isNullOrBlank() && !current.partnerUid.isNullOrBlank()) {
+                    val notifId = "avatar_${System.currentTimeMillis()}_${(100..999).random()}"
+                    val senderName = newUsername.ifBlank { "Partner" }
+                    val title = "✨ $senderName updated profile picture"
+                    val notifMessage = "Check out your partner's fresh new avatar in your sanctuary! 💕"
+
+                    firestore.collection("notifications").document(notifId).set(
+                        mapOf(
+                            "id" to notifId,
+                            "title" to title,
+                            "message" to notifMessage,
+                            "type" to "SYSTEM",
+                            "senderUid" to uid,
+                            "receiverUid" to current.partnerUid,
+                            "iconName" to "person",
+                            "timestamp" to System.currentTimeMillis(),
+                            "read" to false
+                        ),
+                        SetOptions.merge()
+                    )
+
+                    com.pairlink.app.core.util.FcmPushHelper.sendPushNotificationToPartner(
+                        partnerUid = current.partnerUid,
+                        title = title,
+                        message = notifMessage,
+                        type = "SYSTEM",
+                        senderUid = uid,
+                        iconName = "person"
+                    )
+                }
             } catch (e: Exception) {
                 Timber.w(e, "Could not update user profile in Firestore immediately: %s", e.message)
             }

@@ -1,14 +1,22 @@
 package com.pairlink.app
 
 import android.app.Application
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.firebase.FirebaseApp
 import com.pairlink.app.core.notifications.NotificationChannelsHelper
+import com.pairlink.app.core.workers.NotificationSyncWorker
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 /**
  * Main Application class for PairLink.
- * Initializes Hilt Dependency Injection, Timber logging, Firebase, and Notification Channels.
+ * Initializes Hilt, Timber logging, Firebase, Notification Channels,
+ * and schedules background notification sync workers.
  */
 @HiltAndroidApp
 class PairLinkApplication : Application() {
@@ -35,5 +43,25 @@ class PairLinkApplication : Application() {
 
         // Initialize Android notification channels
         NotificationChannelsHelper.createAllNotificationChannels(this)
+
+        // Schedule background NotificationSyncWorker for offline / app-closed notifications
+        try {
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
+            val workRequest = PeriodicWorkRequestBuilder<NotificationSyncWorker>(15, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .build()
+
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "PairLinkNotificationSyncWorker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+            )
+            Timber.i("NotificationSyncWorker enqueued successfully")
+        } catch (e: Exception) {
+            Timber.w(e, "Error enqueuing NotificationSyncWorker: %s", e.message)
+        }
     }
 }

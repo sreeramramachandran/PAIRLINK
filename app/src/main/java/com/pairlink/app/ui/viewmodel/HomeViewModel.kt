@@ -42,8 +42,33 @@ class HomeViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val pairRepository: PairRepository,
     private val notificationRepository: NotificationRepository,
-    private val hapticManager: PresenceHapticManager
+    private val hapticManager: PresenceHapticManager,
+    private val weatherRepository: com.pairlink.app.data.repository.WeatherRepository
 ) : ViewModel() {
+
+    init {
+        refreshWeather()
+    }
+
+    fun refreshWeather() {
+        viewModelScope.launch {
+            val user = authRepository.currentUser.value
+            val partner = partnerRepository.partnerProfile.value
+            
+            // Update logged-in user's own location & live weather in Firestore
+            val userLoc = if (user.locationName.isNotBlank() && !user.locationName.equals("Malappuram, India", ignoreCase = true)) user.locationName else "Indore, India"
+            weatherRepository.updateLocationAndWeather(
+                lat = if (user.latitude != 0.0) user.latitude else 22.7196,
+                lon = if (user.longitude != 0.0) user.longitude else 75.8577,
+                locationName = userLoc
+            )
+
+            // Fetch partner's live weather without overwriting user's Firestore document
+            if (partner.latitude != 0.0 && partner.longitude != 0.0) {
+                weatherRepository.fetchWeather(partner.latitude, partner.longitude)
+            }
+        }
+    }
 
     val uiState: StateFlow<HomeUiState> = combine(
         partnerRepository.partnerProfile,
@@ -72,14 +97,9 @@ class HomeViewModel @Inject constructor(
     )
 
     fun sendHeartPulse() {
-        hapticManager.triggerPulseVibration()
+        hapticManager.triggerHeartPressFeedback()
         viewModelScope.launch {
             partnerRepository.sendHeartPulse()
-            notificationRepository.addNotification(
-                title = "You sent a heartbeat!",
-                message = "A warm burst of affection was sent to your sanctuary. ❤️",
-                type = NotificationType.PRESENCE
-            )
         }
     }
 

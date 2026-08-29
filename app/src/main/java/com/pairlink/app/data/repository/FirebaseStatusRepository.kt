@@ -34,6 +34,7 @@ import javax.inject.Singleton
 class FirebaseStatusRepository @Inject constructor(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
+    @dagger.hilt.android.qualifiers.ApplicationContext private val context: android.content.Context,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : StatusRepository {
 
@@ -131,8 +132,98 @@ class FirebaseStatusRepository @Inject constructor(
                 }
                 firestore.collection("users").document(currentUid).set(updates, SetOptions.merge()).await()
                 Timber.d("Status updated in Firestore: %s", cleanStatus)
+
+                // Dispatch notification & FCM push to partner
+                val userDoc = firestore.collection("users").document(currentUid).get().await()
+                val partnerUid = userDoc.getString("partnerUid") ?: ""
+                val username = userDoc.getString("username") ?: "Partner"
+                if (partnerUid.isNotBlank()) {
+                    val now = System.currentTimeMillis()
+                    val notifId = "status_${now}_${(100..999).random()}"
+                    val isReachedHome = cleanStatus.contains("Home", ignoreCase = true)
+                    val title = if (isReachedHome) "🏠 $username reached home safely." else "$username is $cleanStatus"
+                    val notifMessage = message?.ifBlank { "Activity status updated in your sanctuary." } ?: "Activity status updated in your sanctuary."
+                    val typeStr = if (isReachedHome) "REACHED_HOME" else "STATUS_UPDATED"
+                    val iconName = if (isReachedHome) "home" else "work"
+
+                    firestore.collection("notifications").document(notifId).set(
+                        mapOf(
+                            "id" to notifId,
+                            "title" to title,
+                            "message" to notifMessage,
+                            "type" to typeStr,
+                            "senderUid" to currentUid,
+                            "receiverUid" to partnerUid,
+                            "iconName" to iconName,
+                            "timestamp" to now,
+                            "read" to false
+                        ),
+                        SetOptions.merge()
+                    )
+
+                    com.pairlink.app.core.util.FcmPushHelper.sendPushNotificationToPartner(
+                        partnerUid = partnerUid,
+                        title = title,
+                        message = notifMessage,
+                        type = typeStr,
+                        senderUid = currentUid,
+                        iconName = iconName
+                    )
+                }
             } catch (e: Exception) {
                 Timber.w(e, "Could not update status immediately in Firestore: %s", e.message)
+            }
+        }
+        Result.success(Unit)
+    }
+
+    override suspend fun setStatusSticker(stickerUrl: String, stickerId: String): Result<Unit> = withContext(ioDispatcher) {
+        if (auth.currentUser != null && currentUid.isNotBlank()) {
+            try {
+                val cloudUrl = FirebaseStickerUploader.uploadStickerIfNeeded(context, stickerUrl)
+                val updates = mapOf(
+                    "currentStatusStickerUrl" to cloudUrl,
+                    "currentStatusStickerId" to stickerId,
+                    "updatedAt" to System.currentTimeMillis()
+                )
+                firestore.collection("users").document(currentUid).set(updates, SetOptions.merge()).await()
+                Timber.d("Status Sticker updated in Firestore with cloud URL: %s", cloudUrl)
+
+                val userDoc = firestore.collection("users").document(currentUid).get().await()
+                val partnerUid = userDoc.getString("partnerUid") ?: ""
+                val username = userDoc.getString("username") ?: "Partner"
+                if (partnerUid.isNotBlank()) {
+                    val now = System.currentTimeMillis()
+                    val notifId = "status_${now}_${(100..999).random()}"
+                    val title = "🌟 $username updated status sticker"
+                    val notifMessage = "Shared a new sticker status in your sanctuary!"
+
+                    firestore.collection("notifications").document(notifId).set(
+                        mapOf(
+                            "id" to notifId,
+                            "title" to title,
+                            "message" to notifMessage,
+                            "type" to "STATUS_UPDATED",
+                            "senderUid" to currentUid,
+                            "receiverUid" to partnerUid,
+                            "iconName" to "star",
+                            "timestamp" to now,
+                            "read" to false
+                        ),
+                        SetOptions.merge()
+                    )
+
+                    com.pairlink.app.core.util.FcmPushHelper.sendPushNotificationToPartner(
+                        partnerUid = partnerUid,
+                        title = title,
+                        message = notifMessage,
+                        type = "STATUS_UPDATED",
+                        senderUid = currentUid,
+                        iconName = "star"
+                    )
+                }
+            } catch (e: Exception) {
+                Timber.w(e, "Error updating status sticker in Firestore: %s", e.message)
             }
         }
         Result.success(Unit)

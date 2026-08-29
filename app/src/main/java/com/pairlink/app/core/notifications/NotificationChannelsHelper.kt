@@ -8,7 +8,7 @@ import android.os.Build
 
 /**
  * Creates and maintains all distinct Android Notification Channels for PairLink
- * with explicit Notification.VISIBILITY_PUBLIC for 100% lock-screen display.
+ * with explicit Notification.VISIBILITY_PUBLIC, IMPORTANCE_HIGH, and deep 2.4s heartbeat vibration pattern.
  */
 object NotificationChannelsHelper {
 
@@ -19,6 +19,8 @@ object NotificationChannelsHelper {
     const val CHANNEL_BIRTHDAY = "birthday_channel"
     const val CHANNEL_ANNIVERSARY = "anniversary_channel"
     const val CHANNEL_SYSTEM = "system_channel"
+
+    private val DeepHeartbeatVibrationPattern = longArrayOf(0, 350, 150, 450, 150, 600, 200, 500)
 
     fun createAllNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
@@ -35,7 +37,7 @@ object NotificationChannelsHelper {
                 enableLights(true)
                 enableVibration(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                vibrationPattern = longArrayOf(0, 130, 90, 220, 550)
+                vibrationPattern = DeepHeartbeatVibrationPattern
             },
             NotificationChannel(
                 CHANNEL_RELATIONSHIP,
@@ -46,6 +48,7 @@ object NotificationChannelsHelper {
                 enableLights(true)
                 enableVibration(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             },
             NotificationChannel(
                 CHANNEL_MOOD,
@@ -56,6 +59,7 @@ object NotificationChannelsHelper {
                 enableLights(true)
                 enableVibration(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             },
             NotificationChannel(
                 CHANNEL_STATUS,
@@ -66,6 +70,7 @@ object NotificationChannelsHelper {
                 enableLights(true)
                 enableVibration(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             },
             NotificationChannel(
                 CHANNEL_BIRTHDAY,
@@ -76,6 +81,7 @@ object NotificationChannelsHelper {
                 enableLights(true)
                 enableVibration(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             },
             NotificationChannel(
                 CHANNEL_ANNIVERSARY,
@@ -86,6 +92,7 @@ object NotificationChannelsHelper {
                 enableLights(true)
                 enableVibration(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             },
             NotificationChannel(
                 CHANNEL_SYSTEM,
@@ -94,7 +101,9 @@ object NotificationChannelsHelper {
             ).apply {
                 description = "General sanctuary and account notifications."
                 enableLights(true)
+                enableVibration(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             }
         )
 

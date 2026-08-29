@@ -96,6 +96,7 @@ dependencies {
 
     // Coil Image Loading
     implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

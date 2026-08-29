@@ -1,12 +1,17 @@
 package com.pairlink.app.ui.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pairlink.app.core.util.StickerStorageHelper
+import com.pairlink.app.data.repository.FirebaseStickerUploader
 import com.pairlink.app.data.repository.MoodRepository
 import com.pairlink.app.data.repository.NotificationRepository
 import com.pairlink.app.domain.model.MoodItem
 import com.pairlink.app.domain.model.NotificationType
+import com.pairlink.app.domain.model.StickerItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +31,8 @@ data class MoodUiState(
 @HiltViewModel
 class MoodViewModel @Inject constructor(
     private val moodRepository: MoodRepository,
-    private val notificationRepository: NotificationRepository
+    private val notificationRepository: NotificationRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _errorMessage = MutableStateFlow<String?>(null)
@@ -59,10 +65,6 @@ class MoodViewModel @Inject constructor(
             _errorMessage.value = "Please select or enter a mood."
             return
         }
-        if (cleanMood.length > 80) {
-            _errorMessage.value = "Mood must be 80 characters or less."
-            return
-        }
 
         viewModelScope.launch {
             _isLoading.value = true
@@ -80,6 +82,33 @@ class MoodViewModel @Inject constructor(
                 onComplete()
             }.onFailure { e ->
                 _errorMessage.value = e.message ?: "Failed to update mood."
+            }
+        }
+    }
+
+    fun saveStickerMood(sticker: StickerItem, onComplete: () -> Unit = {}) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            val cloudUrl = FirebaseStickerUploader.uploadStickerIfNeeded(context, sticker.urlOrRes)
+            StickerStorageHelper.updateStickerCloudUrl(context, sticker.id, cloudUrl)
+
+            val stickerRes = moodRepository.setStickerMood(cloudUrl, sticker.id)
+            val moodRes = moodRepository.setMood("Feeling " + sticker.name)
+
+            _isLoading.value = false
+
+            if (stickerRes.isSuccess && moodRes.isSuccess) {
+                notificationRepository.addNotification(
+                    title = "Mood sticker updated",
+                    message = "Your sticker mood was updated in your sanctuary. ✨",
+                    type = NotificationType.MOOD_UPDATED,
+                    iconName = "mood"
+                )
+                onComplete()
+            } else {
+                _errorMessage.value = "Failed to update sticker mood."
             }
         }
     }

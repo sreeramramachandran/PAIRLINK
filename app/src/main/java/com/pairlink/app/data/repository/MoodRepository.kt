@@ -11,6 +11,7 @@ interface MoodRepository {
     val currentMood: StateFlow<String>
     val availableMoods: StateFlow<List<MoodItem>>
     suspend fun setMood(mood: String): Result<Unit>
+    suspend fun setStickerMood(stickerUrl: String, stickerId: String): Result<Unit>
     suspend fun deleteCustomMood(moodId: String): Result<Unit>
     fun observePartnerMood(): Flow<String>
 }

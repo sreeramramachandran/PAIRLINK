@@ -274,7 +274,6 @@ fun HomeScreen(
                                     )
                                 },
                                 onClick = {
-                                    onHeartPressed()
                                     onSendHeart()
                                 },
                                 modifier = Modifier.padding(horizontal = 24.dp)
@@ -335,7 +334,7 @@ fun HomeScreen(
                         }
                     }
 
-                    // 3. RELATIONSHIP DAYS COUNTER & PARTNER BIRTHDAY CARDS
+                    // 3. 4 BENTO CARDS GRID (TOGETHER FOR, BIRTHDAY, MY MOOD, PARTNER MOOD)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -357,7 +356,31 @@ fun HomeScreen(
                         )
                     }
 
-                    // 4. 4 QUICK ACTION GRID CARDS
+                    // Row 2: Partner's Mood & Partner's Status (With Live Large Animated Stickers & Traveling Red Border Animation)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        // Partner's Mood Card
+                        MoodStickerCard(
+                            modifier = Modifier.weight(1f),
+                            currentMood = partner.currentMood.ifBlank { "Happy" },
+                            stickerUrl = partner.currentMoodStickerUrl,
+                            title = "$displayName's Mood",
+                            onClick = { onTabSelected(BottomNavTab.MOOD) }
+                        )
+
+                        // Partner's Status Card
+                        StatusStickerCard(
+                            modifier = Modifier.weight(1f),
+                            currentStatus = partner.currentStatus.ifBlank { "Available" },
+                            stickerUrl = partner.currentStatusStickerUrl,
+                            title = "$displayName's Status",
+                            onClick = { onTabSelected(BottomNavTab.MOOD) }
+                        )
+                    }
+
+                    // 4. 4 QUICK ACTION GRID CARDS (CHAT, MEMORIES, SURPRISE, LOCATION)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -456,17 +479,45 @@ fun HomeScreen(
 
                         // Right Weather Card
                         GlassCard(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable { onNavigateToLocation() },
                             shape = RoundedCornerShape(20.dp),
                             contentPadding = 12.dp
                         ) {
                             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                Text(text = "📍 Malappuram", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = DesignTokens.Colors.TextSecondary)
-                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                                    Text(text = "28°", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF1D1418))
-                                    Text(text = "🌤️", fontSize = 20.sp)
+                                Text(
+                                    text = "📍 ${partner.locationName.ifBlank { "Malappuram, India" }}",
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = DesignTokens.Colors.TextSecondary,
+                                    maxLines = 1
+                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = partner.weatherTemp.ifBlank { "25°" },
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        color = Color(0xFF1D1418)
+                                    )
+                                    Text(
+                                        text = if (partner.weatherCondition.contains("Rain", ignoreCase = true)) "🌧️"
+                                               else if (partner.weatherCondition.contains("Cloud", ignoreCase = true)) "⛅"
+                                               else if (partner.weatherCondition.contains("Sun", ignoreCase = true) || partner.weatherCondition.contains("Clear", ignoreCase = true)) "☀️"
+                                               else "🌤️",
+                                        fontSize = 20.sp
+                                    )
                                 }
-                                Text(text = "Partly Cloudy", fontSize = 10.sp, color = DesignTokens.Colors.TextSecondary)
+                                Text(
+                                    text = partner.weatherCondition.ifBlank { "Partly Cloudy" },
+                                    fontSize = 10.sp,
+                                    color = DesignTokens.Colors.TextSecondary,
+                                    maxLines = 1
+                                )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Box(
                                     modifier = Modifier
@@ -476,7 +527,13 @@ fun HomeScreen(
                                         .padding(6.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(text = "9:41 PM ❤️ 9:41 PM", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = DesignTokens.Colors.PrimaryCrimson)
+                                    val nowTime = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("h:mm a"))
+                                    Text(
+                                        text = "$nowTime ❤️ $nowTime",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = DesignTokens.Colors.PrimaryCrimson
+                                    )
                                 }
                             }
                         }

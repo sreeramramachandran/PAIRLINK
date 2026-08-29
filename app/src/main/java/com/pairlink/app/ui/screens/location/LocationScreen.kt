@@ -45,10 +45,8 @@ fun LocationScreen(
     val partnerAvatar = partner.avatarUrl.ifBlank { "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" }
     val userAvatar = user.profileImageUrl.ifBlank { user.avatarUrl.ifBlank { "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" } }
 
-    val rawUserLoc = user.locationName.ifBlank { "Indore, India" }
-    val rawPartnerLoc = partner.locationName.ifBlank { "Malappuram, India" }
-    val userLoc = rawUserLoc
-    val partnerLoc = if (rawPartnerLoc.equals(rawUserLoc, ignoreCase = true)) "Malappuram, India" else rawPartnerLoc
+    val userLoc = if (user.locationName.isNotBlank() && !user.locationName.equals("Malappuram, India", ignoreCase = true)) user.locationName else "Indore, India"
+    val partnerLoc = if (partner.locationName.isNotBlank() && !partner.locationName.equals(userLoc, ignoreCase = true)) partner.locationName else "Malappuram, India"
     val partnerWeather = partner.weatherTemp.ifBlank { "28°" } + " " + partner.weatherCondition.ifBlank { "Partly Cloudy" }
 
     AnimatedMeshBackground(modifier = modifier) {

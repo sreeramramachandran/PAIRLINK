@@ -362,16 +362,27 @@ fun NavGraph(
 
             // 12. Mood Selection Screen
             composable(Screen.Mood.route) {
+                val authViewModel: AuthViewModel = hiltViewModel()
+                val userProfile by authViewModel.currentUser.collectAsState()
                 val moodViewModel: MoodViewModel = hiltViewModel()
                 val moodState by moodViewModel.uiState.collectAsState()
                 MoodScreen(
                     currentMood = moodState.currentMood,
+                    currentStickerUrl = userProfile.currentMoodStickerUrl,
                     availableMoods = moodState.availableMoods,
                     onSaveMood = { mood ->
                         moodViewModel.saveMood(mood)
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Home.route) { inclusive = false }
                             launchSingleTop = true
+                        }
+                    },
+                    onSaveStickerMood = { sticker ->
+                        moodViewModel.saveStickerMood(sticker) {
+                            navController.navigate(Screen.Home.route) {
+                                popUpTo(Screen.Home.route) { inclusive = false }
+                                launchSingleTop = true
+                            }
                         }
                     },
                     onDeleteMood = { moodViewModel.deleteCustomMood(it) },
@@ -387,10 +398,13 @@ fun NavGraph(
 
             // 13. Status Selection Screen
             composable(Screen.Status.route) {
+                val authViewModel: AuthViewModel = hiltViewModel()
+                val userProfile by authViewModel.currentUser.collectAsState()
                 val statusViewModel: StatusViewModel = hiltViewModel()
                 val statusState by statusViewModel.uiState.collectAsState()
                 UpdateStatusScreen(
                     currentStatus = statusState.currentStatus,
+                    currentStatusStickerUrl = userProfile.currentStatusStickerUrl,
                     lastUpdated = statusState.lastUpdated,
                     availableStatuses = statusState.availableStatuses,
                     onUpdateStatus = { status ->
@@ -398,6 +412,14 @@ fun NavGraph(
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Home.route) { inclusive = false }
                             launchSingleTop = true
+                        }
+                    },
+                    onSaveStatusSticker = { sticker ->
+                        statusViewModel.saveStatusSticker(sticker) {
+                            navController.navigate(Screen.Home.route) {
+                                popUpTo(Screen.Home.route) { inclusive = false }
+                                launchSingleTop = true
+                            }
                         }
                     },
                     onAddCustomStatus = { status ->
@@ -586,7 +608,7 @@ fun NavGraph(
                             navController.navigate(Screen.Home.route)
                         }
                     },
-                    onRefreshLocation = { },
+                    onRefreshLocation = { homeViewModel.refreshWeather() },
                     currentTab = currentTab,
                     onTabSelected = onTabSelected
                 )
