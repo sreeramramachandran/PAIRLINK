@@ -1,7 +1,11 @@
 package com.pairlink.app.ui.components
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -23,31 +27,29 @@ import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Mood
 import androidx.compose.material.icons.filled.Work
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pairlink.app.core.designsystem.DesignTokens
-import kotlinx.coroutines.delay
 
 /**
- * Bento Feature Card for displaying current Mood, Status, Together duration, or Birthday
- * with soft fade/slide animations and subtle glow when values update.
+ * Bento Feature Card displaying current Mood, Status, Together duration, or Birthday
+ * with a continuous travelling red line moving along the box border perimeter.
  */
 @Composable
 fun BentoFeatureCard(
@@ -60,24 +62,49 @@ fun BentoFeatureCard(
     isSlideAnimation: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    var isRecentlyUpdated by remember { mutableStateOf(false) }
-
-    LaunchedEffect(value) {
-        isRecentlyUpdated = true
-        delay(2000)
-        isRecentlyUpdated = false
-    }
-
-    val glowBorderColor by animateColorAsState(
-        targetValue = if (isRecentlyUpdated) iconColor.copy(alpha = 0.6f) else Color.White.copy(alpha = 0.20f),
-        animationSpec = tween(durationMillis = 500),
-        label = "GlowBorder"
+    val infiniteTransition = rememberInfiniteTransition(label = "TravelingRedBorder")
+    val progress by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "BorderProgress"
     )
+
+    val cardRadiusPx = DesignTokens.Radius.Large
 
     GlassCard(
         modifier = modifier
             .fillMaxWidth()
-            .border(1.5.dp, glowBorderColor, RoundedCornerShape(DesignTokens.Radius.Large)),
+            .drawWithContent {
+                drawContent()
+                val totalPerimeter = 2f * (size.width + size.height)
+                val dashLength = totalPerimeter * 0.35f
+                val gapLength = totalPerimeter * 0.65f
+                val phase = -progress * (dashLength + gapLength)
+
+                // 1. Base subtle border outline
+                drawRoundRect(
+                    color = Color(0xFFFFB3C1).copy(alpha = 0.40f),
+                    style = Stroke(width = 1.5.dp.toPx()),
+                    cornerRadius = CornerRadius(cardRadiusPx.toPx(), cardRadiusPx.toPx())
+                )
+
+                // 2. Traveling vibrant crimson red line moving along the box perimeter
+                drawRoundRect(
+                    color = Color(0xFFE60039),
+                    style = Stroke(
+                        width = 2.5.dp.toPx(),
+                        pathEffect = PathEffect.dashPathEffect(
+                            intervals = floatArrayOf(dashLength, gapLength),
+                            phase = phase
+                        )
+                    ),
+                    cornerRadius = CornerRadius(cardRadiusPx.toPx(), cardRadiusPx.toPx())
+                )
+            },
         shape = RoundedCornerShape(DesignTokens.Radius.Large),
         contentPadding = 16.dp,
         onClick = onClick
@@ -89,16 +116,17 @@ fun BentoFeatureCard(
         ) {
             Box(
                 modifier = Modifier
-                    .size(42.dp)
+                    .size(44.dp)
                     .clip(CircleShape)
-                    .background(iconBackground),
+                    .background(iconBackground)
+                    .border(1.dp, Color(0xFFFFB3C1), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = title,
                     tint = iconColor,
-                    modifier = Modifier.size(22.dp)
+                    modifier = Modifier.size(24.dp)
                 )
             }
 
@@ -107,7 +135,7 @@ fun BentoFeatureCard(
                     text = title.uppercase(),
                     color = DesignTokens.Colors.TextSecondary,
                     fontSize = 11.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 )
 
@@ -126,9 +154,9 @@ fun BentoFeatureCard(
                 ) { targetVal ->
                     Text(
                         text = targetVal,
-                        color = DesignTokens.Colors.TextPrimary,
+                        color = Color(0xFF1D1418),
                         fontSize = 15.sp,
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight.ExtraBold,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -154,8 +182,8 @@ fun StatusCard(
         title = title,
         value = currentStatus,
         icon = statusIcon,
-        iconColor = DesignTokens.Colors.VibrantPink,
-        iconBackground = DesignTokens.Colors.VibrantPink.copy(alpha = 0.20f),
+        iconColor = DesignTokens.Colors.PrimaryCrimson,
+        iconBackground = Color(0xFFFFF0F3),
         onClick = onClick,
         isSlideAnimation = true,
         modifier = modifier
@@ -173,8 +201,8 @@ fun RelationshipCard(
         title = title,
         value = togetherTime,
         icon = Icons.Default.Favorite,
-        iconColor = DesignTokens.Colors.Lavender,
-        iconBackground = DesignTokens.Colors.Lavender.copy(alpha = 0.20f),
+        iconColor = DesignTokens.Colors.PrimaryCrimson,
+        iconBackground = Color(0xFFFFF0F3),
         onClick = onClick,
         modifier = modifier
     )
@@ -191,9 +219,230 @@ fun BirthdayCard(
         title = title,
         value = daysLeft,
         icon = Icons.Default.Cake,
-        iconColor = DesignTokens.Colors.SkyBlue,
-        iconBackground = DesignTokens.Colors.SkyBlue.copy(alpha = 0.20f),
+        iconColor = DesignTokens.Colors.PrimaryCrimson,
+        iconBackground = Color(0xFFFFF0F3),
         onClick = onClick,
         modifier = modifier
     )
 }
+
+@Composable
+fun MoodStickerCard(
+    currentMood: String,
+    stickerUrl: String = "",
+    title: String = "Current Mood",
+    onClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "TravelingRedBorderMood")
+    val progress by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "BorderProgressMood"
+    )
+
+    val cardRadiusPx = DesignTokens.Radius.Large
+
+    if (stickerUrl.isNotBlank()) {
+        GlassCard(
+            modifier = modifier
+                .fillMaxWidth()
+                .drawWithContent {
+                    drawContent()
+                    val totalPerimeter = 2f * (size.width + size.height)
+                    val dashLength = totalPerimeter * 0.35f
+                    val gapLength = totalPerimeter * 0.65f
+                    val phase = -progress * (dashLength + gapLength)
+
+                    drawRoundRect(
+                        color = Color(0xFFFFB3C1).copy(alpha = 0.40f),
+                        style = Stroke(width = 1.5.dp.toPx()),
+                        cornerRadius = CornerRadius(cardRadiusPx.toPx(), cardRadiusPx.toPx())
+                    )
+
+                    drawRoundRect(
+                        color = Color(0xFFE60039),
+                        style = Stroke(
+                            width = 2.5.dp.toPx(),
+                            pathEffect = PathEffect.dashPathEffect(
+                                intervals = floatArrayOf(dashLength, gapLength),
+                                phase = phase
+                            )
+                        ),
+                        cornerRadius = CornerRadius(cardRadiusPx.toPx(), cardRadiusPx.toPx())
+                    )
+                },
+            shape = RoundedCornerShape(DesignTokens.Radius.Large),
+            contentPadding = 16.dp,
+            onClick = onClick
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFFFF0F3))
+                        .border(1.5.dp, Color(0xFFFFB3C1), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AnimatedStickerImage(
+                        stickerUrl = stickerUrl,
+                        emojiFallback = "💖",
+                        modifier = Modifier.size(64.dp)
+                    )
+                }
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = title.uppercase(),
+                        color = DesignTokens.Colors.TextSecondary,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp
+                    )
+
+                    Text(
+                        text = currentMood,
+                        color = Color(0xFF1D1418),
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+    } else {
+        BentoFeatureCard(
+            title = title,
+            value = currentMood,
+            icon = Icons.Default.Favorite,
+            iconColor = DesignTokens.Colors.PrimaryCrimson,
+            iconBackground = Color(0xFFFFF0F3),
+            onClick = onClick,
+            isSlideAnimation = true,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+fun StatusStickerCard(
+    currentStatus: String,
+    stickerUrl: String = "",
+    title: String = "Current Status",
+    onClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "TravelingRedBorderStatus")
+    val progress by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "BorderProgressStatus"
+    )
+
+    val cardRadiusPx = DesignTokens.Radius.Large
+
+    val statusIcon = when {
+        currentStatus.contains("Home", ignoreCase = true) -> Icons.Default.Home
+        currentStatus.contains("Driv", ignoreCase = true) -> Icons.Default.DirectionsCar
+        else -> Icons.Default.Work
+    }
+
+    if (stickerUrl.isNotBlank()) {
+        GlassCard(
+            modifier = modifier
+                .fillMaxWidth()
+                .drawWithContent {
+                    drawContent()
+                    val totalPerimeter = 2f * (size.width + size.height)
+                    val dashLength = totalPerimeter * 0.35f
+                    val gapLength = totalPerimeter * 0.65f
+                    val phase = -progress * (dashLength + gapLength)
+
+                    drawRoundRect(
+                        color = Color(0xFFFFB3C1).copy(alpha = 0.40f),
+                        style = Stroke(width = 1.5.dp.toPx()),
+                        cornerRadius = CornerRadius(cardRadiusPx.toPx(), cardRadiusPx.toPx())
+                    )
+
+                    drawRoundRect(
+                        color = Color(0xFFE60039),
+                        style = Stroke(
+                            width = 2.5.dp.toPx(),
+                            pathEffect = PathEffect.dashPathEffect(
+                                intervals = floatArrayOf(dashLength, gapLength),
+                                phase = phase
+                            )
+                        ),
+                        cornerRadius = CornerRadius(cardRadiusPx.toPx(), cardRadiusPx.toPx())
+                    )
+                },
+            shape = RoundedCornerShape(DesignTokens.Radius.Large),
+            contentPadding = 16.dp,
+            onClick = onClick
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFFFF0F3))
+                        .border(1.5.dp, Color(0xFFFFB3C1), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AnimatedStickerImage(
+                        stickerUrl = stickerUrl,
+                        emojiFallback = "📍",
+                        modifier = Modifier.size(64.dp)
+                    )
+                }
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = title.uppercase(),
+                        color = DesignTokens.Colors.TextSecondary,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp
+                    )
+
+                    Text(
+                        text = currentStatus,
+                        color = Color(0xFF1D1418),
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+    } else {
+        BentoFeatureCard(
+            title = title,
+            value = currentStatus,
+            icon = statusIcon,
+            iconColor = DesignTokens.Colors.PrimaryCrimson,
+            iconBackground = Color(0xFFFFF0F3),
+            onClick = onClick,
+            isSlideAnimation = true,
+            modifier = modifier
+        )
+    }
+}
+

@@ -13,17 +13,13 @@ export const UnpairModal: React.FC<UnpairModalProps> = ({
   onNavigate,
 }) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[#0b1326]/60 backdrop-blur-[32px]">
-      <div className="relative w-full max-w-sm rounded-[32px] bg-white/10 border border-white/20 p-6 shadow-[0_32px_64px_rgba(0,0,0,0.5)] modal-animate overflow-hidden">
-        {/* Subtle top light accent */}
-        <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-
-        <div className="flex flex-col items-center text-center space-y-4 z-10 relative py-2">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[#2D2226]/40 backdrop-blur-md">
+      <div className="relative w-full max-w-sm rounded-3xl bg-white/95 backdrop-blur-2xl border border-white p-6 shadow-[0_20px_50px_rgba(230,0,57,0.15)] modal-animate">
+        <div className="flex flex-col items-center text-center space-y-4 py-2">
           {/* Icon container */}
-          <div className="w-16 h-16 rounded-full bg-rose-500/15 border border-rose-400/30 flex items-center justify-center shadow-[0_0_24px_rgba(244,114,182,0.3)] mb-1">
+          <div className="w-14 h-14 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-[#E60039] shadow-sm mb-1">
             <span
-              className="material-symbols-outlined text-rose-400 text-3xl"
-              data-weight="fill"
+              className="material-symbols-outlined text-3xl"
               style={{ fontVariationSettings: "'FILL' 1" }}
             >
               heart_broken
@@ -31,30 +27,30 @@ export const UnpairModal: React.FC<UnpairModalProps> = ({
           </div>
 
           {/* Text Content */}
-          <div className="space-y-1.5">
-            <h2 className="font-display font-bold text-2xl text-[#dae2fd]">
-              Unpair?
+          <div className="space-y-1">
+            <h2 className="font-display font-extrabold text-2xl text-[#2D2226]">
+              Unlink Partner?
             </h2>
-            <p className="font-body text-sm text-[#d6c1c5]/80 px-2 leading-relaxed">
-              This will permanently remove your connection with your partner.
+            <p className="font-body text-xs text-[#7A6E73] font-medium leading-relaxed px-2">
+              This will remove your shared connection and sanctuary data with your partner.
             </p>
           </div>
 
           {/* Actions */}
-          <div className="w-full pt-4 space-y-3">
+          <div className="w-full pt-3 space-y-2.5">
             <button
               onClick={() => {
                 onUnpairConfirm();
                 onNavigate('connect');
               }}
-              className="w-full py-3.5 rounded-full bg-rose-500/30 border border-rose-400/40 text-rose-100 font-display font-bold text-base shadow-[0_0_20px_rgba(244,114,182,0.4)] hover:bg-rose-500/40 active:scale-95 transition-all duration-300 cursor-pointer"
+              className="w-full py-3.5 rounded-full bg-[#E60039] text-white font-display font-bold text-sm shadow-md hover:bg-[#C4002F] active:scale-95 transition-all cursor-pointer"
             >
-              Unpair
+              Unlink
             </button>
 
             <button
               onClick={onCancel}
-              className="w-full py-3.5 rounded-full bg-white/10 border border-white/20 text-[#dae2fd] font-display font-semibold text-base hover:bg-white/15 active:scale-95 transition-all duration-300 cursor-pointer"
+              className="w-full py-3.5 rounded-full bg-rose-50 text-[#7A6E73] hover:text-[#2D2226] font-display font-bold text-sm transition-all border border-rose-200/80 active:scale-95 cursor-pointer"
             >
               Cancel
             </button>

@@ -133,12 +133,20 @@ fun MoodStatusHubScreen(
                                             .border(1.dp, DesignTokens.Colors.PrimaryPink.copy(alpha = 0.4f), CircleShape),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Mood,
-                                            contentDescription = "Mood Icon",
-                                            tint = DesignTokens.Colors.PrimaryPink,
-                                            modifier = Modifier.size(24.dp)
-                                        )
+                                        if (user.currentMoodStickerUrl.isNotBlank()) {
+                                            com.pairlink.app.ui.components.AnimatedStickerImage(
+                                                stickerUrl = user.currentMoodStickerUrl,
+                                                emojiFallback = "💖",
+                                                modifier = Modifier.size(32.dp)
+                                            )
+                                        } else {
+                                            Icon(
+                                                imageVector = Icons.Default.Mood,
+                                                contentDescription = "Mood Icon",
+                                                tint = DesignTokens.Colors.PrimaryPink,
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        }
                                     }
 
                                     Column {
@@ -238,16 +246,24 @@ fun MoodStatusHubScreen(
                                         modifier = Modifier
                                             .size(44.dp)
                                             .clip(CircleShape)
-                                            .background(DesignTokens.Colors.Lavender.copy(alpha = 0.20f))
-                                            .border(1.dp, DesignTokens.Colors.Lavender.copy(alpha = 0.4f), CircleShape),
+                                            .background(Color(0xFFFFF0F3))
+                                            .border(1.dp, Color(0xFFFFB3C1), CircleShape),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(
-                                            imageVector = statusIcon,
-                                            contentDescription = "Status Icon",
-                                            tint = DesignTokens.Colors.Lavender,
-                                            modifier = Modifier.size(24.dp)
-                                        )
+                                        if (user.currentStatusStickerUrl.isNotBlank()) {
+                                            com.pairlink.app.ui.components.AnimatedStickerImage(
+                                                stickerUrl = user.currentStatusStickerUrl,
+                                                emojiFallback = "📍",
+                                                modifier = Modifier.size(36.dp)
+                                            )
+                                        } else {
+                                            Icon(
+                                                imageVector = statusIcon,
+                                                contentDescription = "Status Icon",
+                                                tint = DesignTokens.Colors.PrimaryPink,
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        }
                                     }
 
                                     Column {
@@ -272,13 +288,13 @@ fun MoodStatusHubScreen(
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(50.dp))
-                                        .background(DesignTokens.Colors.Lavender.copy(alpha = 0.15f))
-                                        .border(1.dp, DesignTokens.Colors.Lavender.copy(alpha = 0.35f), RoundedCornerShape(50.dp))
+                                        .background(Color(0xFFFFF0F3))
+                                        .border(1.dp, Color(0xFFFFB3C1), RoundedCornerShape(50.dp))
                                         .padding(horizontal = 12.dp, vertical = 6.dp)
                                 ) {
                                     Text(
                                         text = "Change",
-                                        color = DesignTokens.Colors.Lavender,
+                                        color = DesignTokens.Colors.PrimaryPink,
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.SemiBold
                                     )
@@ -308,7 +324,7 @@ fun MoodStatusHubScreen(
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                         contentDescription = "Go to Status",
-                                        tint = DesignTokens.Colors.Lavender,
+                                        tint = DesignTokens.Colors.PrimaryPink,
                                         modifier = Modifier.size(16.dp)
                                     )
                                 }

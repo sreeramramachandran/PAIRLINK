@@ -1,5 +1,6 @@
 package com.pairlink.app.data.repository
 
+import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mood
 import com.google.firebase.auth.FirebaseAuth
@@ -34,6 +35,7 @@ import javax.inject.Singleton
 class FirebaseMoodRepository @Inject constructor(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
+    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MoodRepository {
 
@@ -124,8 +126,95 @@ class FirebaseMoodRepository @Inject constructor(
                 }
                 firestore.collection("users").document(currentUid).set(updates, SetOptions.merge()).await()
                 Timber.d("Mood updated in Firestore: %s", cleanMood)
+
+                // Dispatch notification & FCM push to partner
+                val userDoc = firestore.collection("users").document(currentUid).get().await()
+                val partnerUid = userDoc.getString("partnerUid") ?: ""
+                val username = userDoc.getString("username") ?: "Partner"
+                if (partnerUid.isNotBlank()) {
+                    val now = System.currentTimeMillis()
+                    val notifId = "mood_${now}_${(100..999).random()}"
+                    val title = "❤️ $username updated mood"
+                    val message = "Mood is now '$cleanMood'"
+
+                    firestore.collection("notifications").document(notifId).set(
+                        mapOf(
+                            "id" to notifId,
+                            "title" to title,
+                            "message" to message,
+                            "type" to "MOOD_UPDATED",
+                            "senderUid" to currentUid,
+                            "receiverUid" to partnerUid,
+                            "iconName" to "mood",
+                            "timestamp" to now,
+                            "read" to false
+                        ),
+                        SetOptions.merge()
+                    )
+
+                    com.pairlink.app.core.util.FcmPushHelper.sendPushNotificationToPartner(
+                        partnerUid = partnerUid,
+                        title = title,
+                        message = message,
+                        type = "MOOD_UPDATED",
+                        senderUid = currentUid,
+                        iconName = "mood"
+                    )
+                }
             } catch (e: Exception) {
                 Timber.w(e, "Could not update mood immediately in Firestore: %s", e.message)
+            }
+        }
+        Result.success(Unit)
+    }
+
+    override suspend fun setStickerMood(stickerUrl: String, stickerId: String): Result<Unit> = withContext(ioDispatcher) {
+        if (auth.currentUser != null && currentUid.isNotBlank()) {
+            try {
+                val cloudUrl = FirebaseStickerUploader.uploadStickerIfNeeded(context, stickerUrl)
+                val updates = mapOf(
+                    "currentMoodStickerUrl" to cloudUrl,
+                    "currentMoodStickerId" to stickerId,
+                    "updatedAt" to System.currentTimeMillis()
+                )
+                firestore.collection("users").document(currentUid).set(updates, SetOptions.merge()).await()
+                Timber.d("Sticker Mood updated in Firestore with cloud URL: %s", cloudUrl)
+
+                val userDoc = firestore.collection("users").document(currentUid).get().await()
+                val partnerUid = userDoc.getString("partnerUid") ?: ""
+                val username = userDoc.getString("username") ?: "Partner"
+                if (partnerUid.isNotBlank()) {
+                    val now = System.currentTimeMillis()
+                    val notifId = "mood_${now}_${(100..999).random()}"
+                    val title = "❤️ $username updated mood sticker"
+                    val message = "Shared a new sticker mood in your sanctuary! ✨"
+
+                    firestore.collection("notifications").document(notifId).set(
+                        mapOf(
+                            "id" to notifId,
+                            "title" to title,
+                            "message" to message,
+                            "type" to "MOOD_UPDATED",
+                            "senderUid" to currentUid,
+                            "receiverUid" to partnerUid,
+                            "iconName" to "mood",
+                            "timestamp" to now,
+                            "read" to false
+                        ),
+                        SetOptions.merge()
+                    )
+
+                    com.pairlink.app.core.util.FcmPushHelper.sendPushNotificationToPartner(
+                        partnerUid = partnerUid,
+                        title = title,
+                        message = message,
+                        type = "MOOD_UPDATED",
+                        senderUid = currentUid,
+                        iconName = "mood"
+                    )
+                }
+            } catch (e: Exception) {
+                Timber.w(e, "Error updating sticker mood in Firestore: %s", e.message)
             }
         }
         Result.success(Unit)

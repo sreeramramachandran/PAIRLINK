@@ -165,7 +165,7 @@ export default function App() {
   const isEditProfile = currentScreen === 'edit_profile';
 
   return (
-    <div className="relative min-h-screen bg-[#0b1326] text-[#dae2fd] font-body selection:bg-[#ffcbd5]/30 selection:text-[#ffcbd5] overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#FAF5F5] text-[#2D2226] font-body selection:bg-[#E60039]/20 selection:text-[#E60039] overflow-x-hidden">
       {/* Interactive WebGL Shader Background */}
       <ShaderBackground />
 

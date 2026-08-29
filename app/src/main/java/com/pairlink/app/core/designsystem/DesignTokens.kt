@@ -6,63 +6,65 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Global Design Tokens for PairLink.
- * Ensures strict visual consistency across all screens and components.
+ * Light Neumorphic & Crimson Glass Theme.
  */
 object DesignTokens {
 
     object Colors {
-        // Romantic Midnight Palette
-        val BackgroundMidnight = Color(0xFF0B1326)
-        val BackgroundDarkSurface = Color(0xFF131A33)
-        val DeepPurple = Color(0xFF301261)
-        val DarkNavy = Color(0xFF0A142E)
-        val MutedPurple = Color(0xFF593D5F)
+        // Light Warm Blush Palette
+        val BackgroundMidnight = Color(0xFFFAF5F5)
+        val BackgroundDarkSurface = Color(0xFFFFFFFF)
+        val DeepPurple = Color(0xFFFFF0F3)
+        val DarkNavy = Color(0xFFFAF5F5)
+        val MutedPurple = Color(0xFFFFE6EC)
 
-        // Pink & Rose Highlights
-        val SoftPink = Color(0xFFF4A7B9)
-        val PrimaryPink = Color(0xFFFFCBD5)
-        val LightPinkHighlight = Color(0xFFFFD9E0)
-        val VibrantPink = Color(0xFFFFA3AB)
-        val DeepPinkText = Color(0xFF521F2E)
-        val DarkRoseAccent = Color(0xFF733949)
+        // Crimson & Rose Highlights (Reference Image Palette)
+        val PrimaryCrimson = Color(0xFFE60039)
+        val CrimsonDark = Color(0xFFC4002F)
+        val SoftPink = Color(0xFFFF809B)
+        val PrimaryPink = Color(0xFFE60039)
+        val LightPinkHighlight = Color(0xFFFFF0F3)
+        val VibrantPink = Color(0xFFFF2E63)
+        val DeepPinkText = Color(0xFFFFFFFF)
+        val DarkRoseAccent = Color(0xFFE60039)
 
-        // Lavender & Violet Accents
-        val Lavender = Color(0xFFDFBBE4)
-        val LightLavender = Color(0xFFFCD7FF)
+        // Lavender & Soft Accents
+        val Lavender = Color(0xFFFFEBF0)
+        val LightLavender = Color(0xFFFFF5F7)
 
-        // Text & Contrast
-        val TextPrimary = Color(0xFFDAE2FD)
-        val TextSecondary = Color(0xFFD6C1C5)
-        val TextMuted = Color(0xFF9E95A2)
+        // High-Contrast Text & Contrast
+        val TextPrimary = Color(0xFF140A0D)
+        val TextSecondary = Color(0xFF4A3E43)
+        val TextMuted = Color(0xFF6A5D63)
         val TextWhite = Color(0xFFFFFFFF)
 
         // Status & Alerts
-        val OnlineGreen = Color(0xFF34D399)
-        val DangerRose = Color(0xFFFB7185)
-        val DangerRoseSurface = Color(0x33FB7185)
+        val OnlineGreen = Color(0xFF10B981)
+        val DangerRose = Color(0xFFE60039)
+        val DangerRoseSurface = Color(0x1AE60039)
         val SkyBlue = Color(0xFF38BDF8)
     }
 
     object Glass {
-        // Translucent Alpha Levels
-        const val BackgroundAlphaSubtle = 0.05f
-        const val BackgroundAlphaDefault = 0.10f
-        const val BackgroundAlphaProminent = 0.15f
-        const val BackgroundAlphaCard = 0.12f
+        // Translucent Alpha Levels for Light Glass Panels
+        const val BackgroundAlphaSubtle = 0.60f
+        const val BackgroundAlphaDefault = 0.88f
+        const val BackgroundAlphaProminent = 0.95f
+        const val BackgroundAlphaCard = 0.90f
 
-        const val BorderAlphaSubtle = 0.15f
-        const val BorderAlphaHighlight = 0.35f
-        const val BorderAlphaFocus = 0.60f
+        const val BorderAlphaSubtle = 0.40f
+        const val BorderAlphaHighlight = 0.80f
+        const val BorderAlphaFocus = 1.00f
 
         val BorderWidthThin: Dp = 1.dp
         val BorderWidthThick: Dp = 2.dp
 
         // Glow Color Definitions
-        val GlowPrimary = Color(0xFFF4A7B9).copy(alpha = 0.45f)
-        val GlowIntense = Color(0xFFF4A7B9).copy(alpha = 0.75f)
-        val GlowGreen = Color(0xFF34D399).copy(alpha = 0.60f)
-        val GlowRose = Color(0xFFFB7185).copy(alpha = 0.50f)
-        val GlowLavender = Color(0xFFDFBBE4).copy(alpha = 0.50f)
+        val GlowPrimary = Color(0xFFE60039).copy(alpha = 0.35f)
+        val GlowIntense = Color(0xFFE60039).copy(alpha = 0.55f)
+        val GlowGreen = Color(0xFF10B981).copy(alpha = 0.50f)
+        val GlowRose = Color(0xFFE60039).copy(alpha = 0.40f)
+        val GlowLavender = Color(0xFFFF809B).copy(alpha = 0.40f)
     }
 
     object Radius {
@@ -97,9 +99,9 @@ object DesignTokens {
     }
 
     object Elevation {
-        val Card: Dp = 8.dp
-        val Floating: Dp = 16.dp
-        val Modal: Dp = 24.dp
+        val Card: Dp = 6.dp
+        val Floating: Dp = 12.dp
+        val Modal: Dp = 20.dp
     }
 
     object Animation {

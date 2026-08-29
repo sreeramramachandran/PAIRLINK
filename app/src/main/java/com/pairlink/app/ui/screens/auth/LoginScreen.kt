@@ -6,16 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -46,14 +37,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pairlink.app.core.designsystem.DesignTokens
-import com.pairlink.app.ui.components.AnimatedMeshBackground
-import com.pairlink.app.ui.components.GlassButton
-import com.pairlink.app.ui.components.GlassCard
-import com.pairlink.app.ui.components.GlassTextField
+import com.pairlink.app.ui.components.*
 
-/**
- * Login Screen supporting flexible phone validation, keyboard imePadding, and clear error handling.
- */
 @Composable
 fun LoginScreen(
     onLoginSubmit: (phone: String, pin: String) -> Unit,
@@ -83,7 +68,7 @@ fun LoginScreen(
         ) {
             GlassCard(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(DesignTokens.Radius.ExtraLarge),
+                shape = RoundedCornerShape(DesignTokens.Radius.SuperLarge),
                 contentPadding = 28.dp
             ) {
                 Column(
@@ -93,21 +78,18 @@ fun LoginScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(18.dp)
                 ) {
-                    // Header
+                    // Header Logo
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        Text(
-                            text = "PairLink",
-                            color = DesignTokens.Colors.PrimaryPink,
-                            fontSize = 34.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                        PairLinkLogo(logoSize = 72.dp, showTagline = true)
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "Enter your sanctuary.",
                             color = DesignTokens.Colors.TextSecondary,
-                            fontSize = 15.sp
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
                         )
                     }
 
@@ -122,7 +104,7 @@ fun LoginScreen(
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(DesignTokens.Radius.Medium))
                                 .background(DesignTokens.Colors.DangerRoseSurface)
-                                .border(1.dp, DesignTokens.Colors.DangerRose.copy(alpha = 0.5f), RoundedCornerShape(DesignTokens.Radius.Medium))
+                                .border(1.dp, DesignTokens.Colors.DangerRose, RoundedCornerShape(DesignTokens.Radius.Medium))
                                 .padding(12.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -135,9 +117,10 @@ fun LoginScreen(
                             )
                             Text(
                                 text = displayError ?: "",
-                                color = Color(0xFFFFE4E6),
+                                color = DesignTokens.Colors.PrimaryCrimson,
                                 fontSize = 12.sp,
-                                lineHeight = 16.sp
+                                lineHeight = 16.sp,
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     }
@@ -160,7 +143,7 @@ fun LoginScreen(
                                 Icon(
                                     imageVector = Icons.Default.Call,
                                     contentDescription = "Phone",
-                                    tint = DesignTokens.Colors.TextSecondary.copy(alpha = 0.7f),
+                                    tint = DesignTokens.Colors.TextSecondary,
                                     modifier = Modifier.size(20.dp)
                                 )
                             }
@@ -180,7 +163,7 @@ fun LoginScreen(
                                 Icon(
                                     imageVector = Icons.Default.Lock,
                                     contentDescription = "Password",
-                                    tint = DesignTokens.Colors.TextSecondary.copy(alpha = 0.7f),
+                                    tint = DesignTokens.Colors.TextSecondary,
                                     modifier = Modifier.size(20.dp)
                                 )
                             },
@@ -188,7 +171,7 @@ fun LoginScreen(
                                 Icon(
                                     imageVector = if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                                     contentDescription = "Toggle Visibility",
-                                    tint = DesignTokens.Colors.TextSecondary.copy(alpha = 0.7f),
+                                    tint = DesignTokens.Colors.TextSecondary,
                                     modifier = Modifier
                                         .size(20.dp)
                                         .clickable { isPasswordVisible = !isPasswordVisible }
@@ -203,16 +186,16 @@ fun LoginScreen(
                         ) {
                             Text(
                                 text = "Forgot Password?",
-                                color = DesignTokens.Colors.PrimaryPink,
+                                color = DesignTokens.Colors.PrimaryCrimson,
                                 fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium,
+                                fontWeight = FontWeight.Bold,
                                 modifier = Modifier.clickable { /* Reset password flow */ }
                             )
                         }
                     }
 
-                    // Login Action Button with explicit feedback
-                    GlassButton(
+                    // Login Crimson Gradient Button
+                    GradientButton(
                         text = if (isLoading) "Logging in..." else "Login",
                         enabled = !isLoading,
                         onClick = {
@@ -234,7 +217,7 @@ fun LoginScreen(
                             {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(18.dp),
-                                    color = DesignTokens.Colors.PrimaryPink,
+                                    color = Color.White,
                                     strokeWidth = 2.dp
                                 )
                             }
@@ -244,7 +227,7 @@ fun LoginScreen(
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                     contentDescription = "Arrow",
-                                    tint = DesignTokens.Colors.PrimaryPink,
+                                    tint = Color.White,
                                     modifier = Modifier.size(18.dp)
                                 )
                             }
@@ -263,9 +246,9 @@ fun LoginScreen(
                         )
                         Text(
                             text = "Register",
-                            color = DesignTokens.Colors.Lavender,
+                            color = DesignTokens.Colors.PrimaryCrimson,
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.ExtraBold,
                             modifier = Modifier.clickable(onClick = onNavigateToRegister)
                         )
                     }

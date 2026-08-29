@@ -16,6 +16,7 @@ interface PairRepository {
     suspend fun cancelRequest(requestId: String): Result<Unit>
     suspend fun unpair(): Result<Unit>
     suspend fun saveRelationshipDate(startDate: String): Result<Unit>
+    suspend fun saveNextMeetingDate(meetingDate: String): Result<Unit>
     fun observeIncomingRequests(): Flow<List<PairRequest>>
     fun observeOutgoingRequests(): Flow<List<PairRequest>>
     fun observePartnerProfile(): Flow<PartnerProfile?>

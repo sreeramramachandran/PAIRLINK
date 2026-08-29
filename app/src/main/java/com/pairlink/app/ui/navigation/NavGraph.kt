@@ -25,6 +25,7 @@ import com.pairlink.app.ui.screens.splash.SplashScreen
 import com.pairlink.app.ui.screens.welcome.WelcomeScreen
 import com.pairlink.app.ui.screens.birthday.BirthdayScreen
 import com.pairlink.app.ui.screens.home.HomeScreen
+import com.pairlink.app.ui.screens.location.LocationScreen
 import com.pairlink.app.ui.screens.mood.MoodScreen
 import com.pairlink.app.ui.screens.mood.MoodStatusHubScreen
 import com.pairlink.app.ui.screens.pairing.ConnectScreen
@@ -66,7 +67,8 @@ fun NavGraph(
     val currentTab = when (currentRoute) {
         Screen.Home.route -> BottomNavTab.HOME
         Screen.MoodHub.route, Screen.Mood.route, Screen.Status.route -> BottomNavTab.MOOD
-        Screen.Updates.route, Screen.Birthday.route, Screen.Anniversary.route -> BottomNavTab.UPDATES
+        Screen.Updates.route -> BottomNavTab.UPDATES
+        Screen.Anniversary.route, Screen.Birthday.route -> BottomNavTab.MEMORIES
         Screen.Settings.route, Screen.Profile.route, Screen.EditProfile.route -> BottomNavTab.SETTINGS
         else -> BottomNavTab.HOME
     }
@@ -76,6 +78,7 @@ fun NavGraph(
             BottomNavTab.HOME -> Screen.Home.route
             BottomNavTab.MOOD -> Screen.MoodHub.route
             BottomNavTab.UPDATES -> Screen.Updates.route
+            BottomNavTab.MEMORIES -> Screen.Anniversary.route
             BottomNavTab.SETTINGS -> Screen.Settings.route
         }
         if (tab == BottomNavTab.HOME) {
@@ -315,14 +318,23 @@ fun NavGraph(
                     partnerDisplayName = homeState.user.partnerNickname,
                     togetherTime = homeState.togetherTimeText,
                     birthdayDaysLeft = homeState.birthdayDaysLeftText,
+                    nextMeetingDaysLeft = homeState.nextMeetingDaysLeft,
+                    nextMeetingHoursLeft = homeState.nextMeetingHoursLeft,
+                    nextMeetingMinsLeft = homeState.nextMeetingMinsLeft,
+                    nextMeetingDateText = homeState.nextMeetingDateText,
+                    nextMeetingRawDate = homeState.nextMeetingRawDate,
                     heartbeatCount = homeState.heartbeatCount,
                     isPartnerHolding = isPartnerHolding,
                     presenceRingState = presenceRingState,
                     onHeartPressed = { presenceViewModel.onHeartPressed() },
                     onHeartReleased = { presenceViewModel.onHeartReleased() },
                     onSendHeart = { homeViewModel.sendHeartPulse() },
+                    onSaveNextMeetingDate = { homeViewModel.saveNextMeetingDate(it) },
+                    onSaveRelationshipDate = { homeViewModel.saveRelationshipDate(it) },
+                    onSavePartnerBirthday = { homeViewModel.updatePartnerBirthday(it) },
                     onNavigateToBirthday = { navController.navigate(Screen.Birthday.route) },
                     onNavigateToRelationship = { navController.navigate(Screen.Anniversary.route) },
+                    onNavigateToLocation = { navController.navigate(Screen.Location.route) },
                     onNavigateToProfile = { navController.navigate(Screen.Profile.route) },
                     currentTab = currentTab,
                     onTabSelected = onTabSelected
@@ -350,16 +362,27 @@ fun NavGraph(
 
             // 12. Mood Selection Screen
             composable(Screen.Mood.route) {
+                val authViewModel: AuthViewModel = hiltViewModel()
+                val userProfile by authViewModel.currentUser.collectAsState()
                 val moodViewModel: MoodViewModel = hiltViewModel()
                 val moodState by moodViewModel.uiState.collectAsState()
                 MoodScreen(
                     currentMood = moodState.currentMood,
+                    currentStickerUrl = userProfile.currentMoodStickerUrl,
                     availableMoods = moodState.availableMoods,
                     onSaveMood = { mood ->
                         moodViewModel.saveMood(mood)
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Home.route) { inclusive = false }
                             launchSingleTop = true
+                        }
+                    },
+                    onSaveStickerMood = { sticker ->
+                        moodViewModel.saveStickerMood(sticker) {
+                            navController.navigate(Screen.Home.route) {
+                                popUpTo(Screen.Home.route) { inclusive = false }
+                                launchSingleTop = true
+                            }
                         }
                     },
                     onDeleteMood = { moodViewModel.deleteCustomMood(it) },
@@ -375,10 +398,13 @@ fun NavGraph(
 
             // 13. Status Selection Screen
             composable(Screen.Status.route) {
+                val authViewModel: AuthViewModel = hiltViewModel()
+                val userProfile by authViewModel.currentUser.collectAsState()
                 val statusViewModel: StatusViewModel = hiltViewModel()
                 val statusState by statusViewModel.uiState.collectAsState()
                 UpdateStatusScreen(
                     currentStatus = statusState.currentStatus,
+                    currentStatusStickerUrl = userProfile.currentStatusStickerUrl,
                     lastUpdated = statusState.lastUpdated,
                     availableStatuses = statusState.availableStatuses,
                     onUpdateStatus = { status ->
@@ -386,6 +412,14 @@ fun NavGraph(
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Home.route) { inclusive = false }
                             launchSingleTop = true
+                        }
+                    },
+                    onSaveStatusSticker = { sticker ->
+                        statusViewModel.saveStatusSticker(sticker) {
+                            navController.navigate(Screen.Home.route) {
+                                popUpTo(Screen.Home.route) { inclusive = false }
+                                launchSingleTop = true
+                            }
                         }
                     },
                     onAddCustomStatus = { status ->
@@ -454,6 +488,12 @@ fun NavGraph(
                 AnniversaryScreen(
                     togetherTime = homeState.togetherTimeText,
                     startDate = homeState.user.relationshipStartDate,
+                    nextMeetingDaysLeft = homeState.nextMeetingDaysLeft,
+                    nextMeetingHoursLeft = homeState.nextMeetingHoursLeft,
+                    nextMeetingMinsLeft = homeState.nextMeetingMinsLeft,
+                    nextMeetingDateText = homeState.nextMeetingDateText,
+                    nextMeetingRawDate = homeState.nextMeetingRawDate,
+                    onSaveNextMeetingDate = { date -> homeViewModel.saveNextMeetingDate(date) },
                     onSaveStartDate = { date -> homeViewModel.saveRelationshipDate(date) },
                     onNavigateBack = {
                         navController.navigate(Screen.Home.route) {
@@ -553,6 +593,24 @@ fun NavGraph(
                         }
                     },
                     onCancel = { navController.popBackStack() }
+                )
+            }
+
+            // 21. Location Screen
+            composable(Screen.Location.route) {
+                val homeViewModel: HomeViewModel = hiltViewModel()
+                val homeState by homeViewModel.uiState.collectAsState()
+                LocationScreen(
+                    user = homeState.user,
+                    partner = homeState.partner,
+                    onNavigateBack = {
+                        if (!navController.popBackStack()) {
+                            navController.navigate(Screen.Home.route)
+                        }
+                    },
+                    onRefreshLocation = { homeViewModel.refreshWeather() },
+                    currentTab = currentTab,
+                    onTabSelected = onTabSelected
                 )
             }
         }

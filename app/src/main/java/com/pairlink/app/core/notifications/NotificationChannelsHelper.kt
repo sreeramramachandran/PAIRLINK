@@ -1,12 +1,14 @@
 package com.pairlink.app.core.notifications
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 
 /**
- * Creates and maintains all distinct Android Notification Channels for PairLink.
+ * Creates and maintains all distinct Android Notification Channels for PairLink
+ * with explicit Notification.VISIBILITY_PUBLIC, IMPORTANCE_HIGH, and deep 2.4s heartbeat vibration pattern.
  */
 object NotificationChannelsHelper {
 
@@ -17,6 +19,8 @@ object NotificationChannelsHelper {
     const val CHANNEL_BIRTHDAY = "birthday_channel"
     const val CHANNEL_ANNIVERSARY = "anniversary_channel"
     const val CHANNEL_SYSTEM = "system_channel"
+
+    private val DeepHeartbeatVibrationPattern = longArrayOf(0, 350, 150, 450, 150, 600, 200, 500)
 
     fun createAllNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
@@ -32,7 +36,8 @@ object NotificationChannelsHelper {
                 description = "Live touch and heartbeat presence signals from your partner."
                 enableLights(true)
                 enableVibration(true)
-                vibrationPattern = longArrayOf(0, 130, 90, 220, 550)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             },
             NotificationChannel(
                 CHANNEL_RELATIONSHIP,
@@ -42,22 +47,30 @@ object NotificationChannelsHelper {
                 description = "Pair requests, connection status, and sanctuary pairing alerts."
                 enableLights(true)
                 enableVibration(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             },
             NotificationChannel(
                 CHANNEL_MOOD,
                 "Mood Updates",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "Emotional updates when your partner shares a new mood."
                 enableLights(true)
+                enableVibration(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             },
             NotificationChannel(
                 CHANNEL_STATUS,
                 "Activity Status",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "Activity and 'Reached Home' safety updates from your partner."
                 enableLights(true)
+                enableVibration(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             },
             NotificationChannel(
                 CHANNEL_BIRTHDAY,
@@ -67,6 +80,8 @@ object NotificationChannelsHelper {
                 description = "Meaningful reminders counting down to your partner's special day."
                 enableLights(true)
                 enableVibration(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             },
             NotificationChannel(
                 CHANNEL_ANNIVERSARY,
@@ -76,13 +91,19 @@ object NotificationChannelsHelper {
                 description = "Anniversary countdowns and relationship milestone celebrations."
                 enableLights(true)
                 enableVibration(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             },
             NotificationChannel(
                 CHANNEL_SYSTEM,
                 "System & Sanctuary",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "General sanctuary and account notifications."
+                enableLights(true)
+                enableVibration(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                vibrationPattern = DeepHeartbeatVibrationPattern
             }
         )
 

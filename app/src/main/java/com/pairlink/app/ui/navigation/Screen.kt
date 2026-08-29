@@ -24,4 +24,5 @@ sealed class Screen(val route: String) {
     data object EditProfile : Screen("edit_profile")
     data object Settings : Screen("settings")
     data object Unpair : Screen("unpair")
+    data object Location : Screen("location")
 }

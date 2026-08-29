@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -32,8 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.pairlink.app.core.designsystem.DesignTokens
 
 /**
- * Reusable Gradient Filled Button (Soft Pink to Radiant Highlight)
- * with deep romantic text color and glowing box shadow.
+ * Reusable Crimson Gradient Button for PairLink matching reference UI.
  */
 @Composable
 fun GradientButton(
@@ -44,19 +42,19 @@ fun GradientButton(
     shape: Shape = RoundedCornerShape(DesignTokens.Radius.Full),
     gradient: Brush = Brush.horizontalGradient(
         colors = listOf(
-            DesignTokens.Colors.PrimaryPink,
-            DesignTokens.Colors.SoftPink
+            DesignTokens.Colors.PrimaryCrimson,
+            DesignTokens.Colors.CrimsonDark
         )
     ),
-    textColor: Color = DesignTokens.Colors.DeepPinkText,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 24.dp, vertical = 15.dp),
+    textColor: Color = Color.White,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 24.dp, vertical = 14.dp),
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.97f else 1f,
+        targetValue = if (isPressed) 0.96f else 1f,
         animationSpec = spring(dampingRatio = 0.7f, stiffness = 400f),
         label = "GradientButtonScale"
     )
@@ -65,17 +63,17 @@ fun GradientButton(
         modifier = modifier
             .scale(scale)
             .shadow(
-                elevation = if (isPressed) 6.dp else 16.dp,
+                elevation = if (isPressed) 4.dp else 12.dp,
                 shape = shape,
-                ambientColor = DesignTokens.Colors.SoftPink.copy(alpha = 0.4f),
-                spotColor = DesignTokens.Colors.SoftPink.copy(alpha = 0.7f)
+                ambientColor = Color(0xFFE60039).copy(alpha = 0.35f),
+                spotColor = Color(0xFFE60039).copy(alpha = 0.50f)
             )
             .clip(shape)
             .background(brush = gradient)
             .clickable(
                 enabled = enabled,
                 interactionSource = interactionSource,
-                indication = ripple(color = Color.White.copy(alpha = 0.4f)),
+                indication = ripple(color = Color.White.copy(alpha = 0.3f)),
                 onClick = onClick
             )
             .padding(contentPadding),
@@ -92,9 +90,9 @@ fun GradientButton(
             Text(
                 text = text,
                 color = textColor,
-                fontSize = 16.sp,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                letterSpacing = 0.3.sp
+                letterSpacing = 0.2.sp
             )
             trailingIcon?.let {
                 Box(modifier = Modifier.padding(start = 8.dp))

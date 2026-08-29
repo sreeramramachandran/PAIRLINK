@@ -73,8 +73,9 @@ class PresenceHapticManager @Inject constructor(
             val vibrator = defaultVibrator ?: return
             if (!vibrator.hasVibrator()) return
 
-            val pulseTimings = longArrayOf(0, 140, 100, 220)
-            val pulseAmplitudes = intArrayOf(0, 255, 0, 255)
+            // Deep romantic multi-pulse heartbeat pattern (~2.4s total duration)
+            val pulseTimings = longArrayOf(0, 350, 150, 450, 150, 600, 200, 500)
+            val pulseAmplitudes = intArrayOf(0, 255, 0, 255, 0, 255, 0, 255)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val effect = VibrationEffect.createWaveform(pulseTimings, pulseAmplitudes, -1)

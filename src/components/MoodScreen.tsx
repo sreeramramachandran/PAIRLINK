@@ -34,13 +34,13 @@ export const MoodScreen: React.FC<MoodScreenProps> = ({
   };
 
   return (
-    <div className="pt-24 pb-32 min-h-screen flex flex-col items-center justify-start px-6 relative z-10 w-full max-w-lg mx-auto">
-      <h1 className="font-display font-light text-2xl md:text-3xl text-[#dae2fd] text-center mb-8 tracking-wide drop-shadow-md mt-2">
-        How are you feeling?
+    <div className="pt-20 pb-32 min-h-screen flex flex-col items-center justify-start px-4 sm:px-6 relative z-10 w-full max-w-lg mx-auto">
+      <h1 className="font-display font-extrabold text-2xl text-[#2D2226] text-center mb-6 tracking-tight mt-2">
+        How are you feeling? ❤️
       </h1>
 
-      {/* Floating Glass Chips Container */}
-      <div className="flex flex-wrap justify-center gap-3.5 w-full mb-8">
+      {/* Floating Light Chips Container */}
+      <div className="flex flex-wrap justify-center gap-3 w-full mb-8">
         {MOOD_OPTIONS.map((item) => {
           const isSelected = selectedMood.toLowerCase() === item.label.toLowerCase() && !customMood;
           return (
@@ -50,22 +50,21 @@ export const MoodScreen: React.FC<MoodScreenProps> = ({
                 setSelectedMood(item.label);
                 setCustomMood('');
               }}
-              className={`mood-chip ${item.floatClass} backdrop-blur-xl border border-white/20 rounded-full px-5 py-3 flex items-center gap-2 hover:bg-white/10 z-10 group bg-white/15 cursor-pointer ${
-                isSelected ? 'selected' : ''
-              }`}
+              className={`mood-chip ${item.floatClass} bg-white/90 backdrop-blur-2xl border ${
+                isSelected ? 'border-[#E60039] bg-rose-50/80 shadow-md text-[#E60039]' : 'border-white/90 shadow-xs text-[#2D2226] hover:bg-rose-50/40'
+              } rounded-full px-5 py-3 flex items-center gap-2 z-10 group cursor-pointer transition-all active:scale-95`}
             >
               <span
                 className={`material-symbols-outlined text-[20px] transition-colors ${
-                  isSelected ? 'text-[#ffcbd5]' : 'text-[#d6c1c5] group-hover:text-[#ffcbd5]'
+                  isSelected ? 'text-[#E60039]' : 'text-[#7A6E73] group-hover:text-[#E60039]'
                 }`}
-                data-weight={isSelected ? 'fill' : 'none'}
                 style={{ fontVariationSettings: isSelected ? "'FILL' 1" : "'FILL' 0" }}
               >
                 {item.icon}
               </span>
               <span
-                className={`font-body text-sm transition-colors ${
-                  isSelected ? 'text-[#ffcbd5] font-semibold' : 'text-[#d6c1c5] group-hover:text-[#dae2fd]'
+                className={`font-body text-xs ${
+                  isSelected ? 'text-[#E60039] font-bold' : 'text-[#2D2226] font-semibold'
                 }`}
               >
                 {item.label}
@@ -76,16 +75,16 @@ export const MoodScreen: React.FC<MoodScreenProps> = ({
       </div>
 
       {/* Custom Mood Input */}
-      <div className="w-full mt-auto mb-6">
+      <div className="w-full mt-auto mb-5">
         <div className="relative w-full">
           <input
             type="text"
             value={customMood}
             onChange={(e) => setCustomMood(e.target.value)}
             placeholder="Create Custom Mood..."
-            className="w-full border border-white/20 rounded-2xl py-4 px-6 text-[#dae2fd] placeholder:text-[#d6c1c5]/50 focus:outline-none focus:border-[#ffcbd5]/50 focus:bg-white/15 transition-all backdrop-blur-xl font-body bg-white/10"
+            className="w-full bg-white/90 border border-rose-200/80 rounded-2xl py-3.5 px-5 text-[#2D2226] placeholder:text-[#7A6E73]/60 focus:border-[#E60039] focus:ring-4 focus:ring-[#E60039]/10 outline-none transition-all font-body text-sm shadow-xs"
           />
-          <span className="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-[#d6c1c5]/50 pointer-events-none text-[20px]">
+          <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#7A6E73] pointer-events-none text-[20px]">
             edit
           </span>
         </div>
@@ -94,7 +93,7 @@ export const MoodScreen: React.FC<MoodScreenProps> = ({
       {/* Save Button */}
       <button
         onClick={handleSave}
-        className="w-full bg-[#ffcbd5] text-[#521f2e] font-display font-medium text-lg py-4 rounded-2xl shadow-[0_0_20px_rgba(244,167,185,0.4)] hover:shadow-[0_0_25px_rgba(244,167,185,0.6)] hover:bg-[#ffd9e0] transition-all active:scale-[0.98] backdrop-blur-xl border border-white/20 cursor-pointer"
+        className="w-full glow-button text-white font-display font-bold text-base py-4 rounded-2xl flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
       >
         Save Mood
       </button>

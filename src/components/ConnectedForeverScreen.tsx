@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScreenType } from '../types';
+import { PairLinkLogo } from './PairLinkLogo';
 
 interface ConnectedForeverScreenProps {
   userAvatar: string;
@@ -14,25 +15,25 @@ export const ConnectedForeverScreen: React.FC<ConnectedForeverScreenProps> = ({
 }) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 relative z-10">
-      <main className="relative z-10 w-full max-w-md mx-auto flex flex-col items-center justify-center my-auto space-y-10 py-10">
+      <main className="relative z-10 w-full max-w-md mx-auto flex flex-col items-center justify-center my-auto space-y-8 py-10">
         {/* Header Text */}
-        <div className="text-center space-y-2">
-          <h1 className="font-display font-bold text-4xl md:text-5xl bg-gradient-to-r from-[#ffcbd5] to-[#dfbbe4] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(244,167,185,0.4)]">
-            Connected Forever
+        <div className="text-center space-y-3">
+          <PairLinkLogo size="lg" showTagline={true} />
+          <h1 className="font-display font-extrabold text-3xl text-[#2D2226] mt-4">
+            Connected Forever ❤️
           </h1>
-          <p className="font-body text-lg text-[#d6c1c5]">
-            Your sanctuary is ready.
+          <p className="font-body text-sm text-[#7A6E73] font-medium">
+            Your digital sanctuary is now ready.
           </p>
         </div>
 
         {/* Profile Avatars Group */}
-        <div className="relative flex items-center justify-center h-60 w-full">
-          {/* Connection Line / Heart */}
+        <div className="relative flex items-center justify-center h-52 w-full my-4">
+          {/* Center Connection Heart */}
           <div className="absolute z-20 flex items-center justify-center animate-pulse">
-            <div className="glass-card rounded-full p-4 flex items-center justify-center bg-white/10 border border-white/20 shadow-[0_0_25px_rgba(244,167,185,0.6)]">
+            <div className="w-14 h-14 rounded-full bg-[#E60039] text-white flex items-center justify-center shadow-lg shadow-red-500/40 border-4 border-white">
               <span
-                className="material-symbols-outlined text-[#ffcbd5] text-4xl"
-                data-weight="fill"
+                className="material-symbols-outlined text-[28px]"
                 style={{ fontVariationSettings: "'FILL' 1" }}
               >
                 favorite
@@ -41,7 +42,7 @@ export const ConnectedForeverScreen: React.FC<ConnectedForeverScreenProps> = ({
           </div>
 
           {/* Partner Avatar (Left) */}
-          <div className="absolute left-8 z-10 w-32 h-32 rounded-full overflow-hidden border-2 border-white/40 glow-aura transform -rotate-6 transition-all duration-700">
+          <div className="absolute left-8 z-10 w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-xl transform -rotate-6 transition-all">
             <img
               src={partnerAvatar}
               alt="Partner"
@@ -50,7 +51,7 @@ export const ConnectedForeverScreen: React.FC<ConnectedForeverScreenProps> = ({
           </div>
 
           {/* User Avatar (Right) */}
-          <div className="absolute right-8 z-30 w-32 h-32 rounded-full overflow-hidden border-2 border-white/40 glow-aura transform rotate-6 transition-all duration-700">
+          <div className="absolute right-8 z-30 w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-xl transform rotate-6 transition-all">
             <img
               src={userAvatar}
               alt="User"
@@ -63,10 +64,10 @@ export const ConnectedForeverScreen: React.FC<ConnectedForeverScreenProps> = ({
         <div className="w-full pt-4">
           <button
             onClick={() => onNavigate('relationship_setup')}
-            className="w-full glass-card rounded-full py-4 px-6 flex items-center justify-center space-x-2 text-[#ffcbd5] font-display font-medium text-lg hover:bg-white/20 transition-all duration-300 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] group active:scale-95 border border-white/20"
+            className="w-full glow-button text-white font-display font-bold text-base py-4 rounded-full flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
           >
-            <span className="font-bold">Continue</span>
-            <span className="material-symbols-outlined text-[#ffcbd5] group-hover:translate-x-1 transition-transform">
+            <span>Continue to Setup</span>
+            <span className="material-symbols-outlined text-[20px]">
               arrow_forward
             </span>
           </button>

@@ -10,7 +10,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   currentScreen,
   onNavigate,
 }) => {
-  // Hide bottom nav on full onboarding screens or modals
+  // Hide bottom nav on onboarding screens or full screen modals
   const hideNavScreens: ScreenType[] = [
     'login',
     'register',
@@ -27,87 +27,99 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   }
 
   const isHome = currentScreen === 'home';
-  const isMood = currentScreen === 'mood' || currentScreen === 'update_status';
-  const isUpdates = currentScreen === 'updates' || currentScreen === 'birthday';
-  const isSettings = currentScreen === 'settings' || currentScreen === 'profile' || currentScreen === 'edit_profile';
+  const isChat = currentScreen === 'updates';
+  const isMemories = currentScreen === 'birthday';
+  const isProfile = currentScreen === 'profile' || currentScreen === 'edit_profile' || currentScreen === 'settings';
 
   return (
-    <nav className="fixed bottom-6 left-0 right-0 z-40 flex justify-center items-center px-6 pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-sm rounded-full backdrop-blur-3xl border border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] bg-white/10 dark:bg-white/10 flex justify-around items-center p-2 glass-card">
-        {/* Home Tab */}
+    <nav className="fixed bottom-4 left-0 right-0 z-40 flex justify-center items-center px-4 pointer-events-none">
+      <div className="pointer-events-auto w-full max-w-md bg-white/95 backdrop-blur-2xl border border-white/90 shadow-[0_12px_36px_rgba(230,0,57,0.12),0_4px_16px_rgba(0,0,0,0.06)] rounded-full px-5 py-2 flex justify-between items-center">
+        {/* 1. Home Tab */}
         <button
           onClick={() => onNavigate('home')}
-          className={`p-3 rounded-full transition-all duration-200 flex items-center justify-center ${
-            isHome
-              ? 'bg-[#ffcbd5]/20 text-[#ffcbd5] shadow-[0_0_16px_rgba(244,167,185,0.5)] scale-105'
-              : 'text-[#d6c1c5] hover:text-[#ffcbd5] hover:bg-white/5'
+          className={`flex flex-col items-center justify-center transition-all duration-200 group ${
+            isHome ? 'text-[#E60039]' : 'text-[#7A6E73] hover:text-[#E60039]'
           }`}
           title="Home Sanctuary"
         >
           <span
-            className="material-symbols-outlined text-[24px]"
-            data-weight={isHome ? 'fill' : 'none'}
+            className="material-symbols-outlined text-[24px] transition-transform group-hover:scale-110"
             style={{ fontVariationSettings: isHome ? "'FILL' 1" : "'FILL' 0" }}
           >
             home
           </span>
+          <span className="text-[10px] font-bold tracking-tight mt-0.5">Home</span>
+          {isHome && <span className="w-1 h-1 rounded-full bg-[#E60039] mt-0.5" />}
         </button>
 
-        {/* Mood Tab */}
-        <button
-          onClick={() => onNavigate('mood')}
-          className={`p-3 rounded-full transition-all duration-200 flex items-center justify-center ${
-            isMood
-              ? 'bg-[#ffcbd5]/20 text-[#ffcbd5] shadow-[0_0_16px_rgba(244,167,185,0.5)] scale-105'
-              : 'text-[#d6c1c5] hover:text-[#ffcbd5] hover:bg-white/5'
-          }`}
-          title="Mood & Status"
-        >
-          <span
-            className="material-symbols-outlined text-[24px]"
-            data-weight={isMood ? 'fill' : 'none'}
-            style={{ fontVariationSettings: isMood ? "'FILL' 1" : "'FILL' 0" }}
-          >
-            mood
-          </span>
-        </button>
-
-        {/* Updates / Timeline Tab */}
+        {/* 2. Chat Tab */}
         <button
           onClick={() => onNavigate('updates')}
-          className={`p-3 rounded-full transition-all duration-200 flex items-center justify-center ${
-            isUpdates
-              ? 'bg-[#ffcbd5]/20 text-[#ffcbd5] shadow-[0_0_16px_rgba(244,167,185,0.5)] scale-105'
-              : 'text-[#d6c1c5] hover:text-[#ffcbd5] hover:bg-white/5'
+          className={`flex flex-col items-center justify-center transition-all duration-200 group ${
+            isChat ? 'text-[#E60039]' : 'text-[#7A6E73] hover:text-[#E60039]'
           }`}
-          title="Updates & Milestones"
+          title="Chat & Updates"
         >
           <span
-            className="material-symbols-outlined text-[24px]"
-            data-weight={isUpdates ? 'fill' : 'none'}
-            style={{ fontVariationSettings: isUpdates ? "'FILL' 1" : "'FILL' 0" }}
+            className="material-symbols-outlined text-[24px] transition-transform group-hover:scale-110"
+            style={{ fontVariationSettings: isChat ? "'FILL' 1" : "'FILL' 0" }}
           >
-            calendar_today
+            chat_bubble
           </span>
+          <span className="text-[10px] font-bold tracking-tight mt-0.5">Chat</span>
+          {isChat && <span className="w-1 h-1 rounded-full bg-[#E60039] mt-0.5" />}
         </button>
 
-        {/* Settings / Profile Tab */}
+        {/* 3. Center Raised Floating Heart Button */}
         <button
-          onClick={() => onNavigate('settings')}
-          className={`p-3 rounded-full transition-all duration-200 flex items-center justify-center ${
-            isSettings
-              ? 'bg-[#ffcbd5]/20 text-[#ffcbd5] shadow-[0_0_16px_rgba(244,167,185,0.5)] scale-105'
-              : 'text-[#d6c1c5] hover:text-[#ffcbd5] hover:bg-white/5'
+          onClick={() => onNavigate('mood')}
+          className="relative -mt-7 flex flex-col items-center group active:scale-95 transition-transform"
+          title="Express Love & Mood"
+        >
+          <div className="w-13 h-13 rounded-full bg-gradient-to-tr from-[#E60039] to-[#FF3366] text-white flex items-center justify-center shadow-lg shadow-red-500/35 border-[3.5px] border-[#FAF5F5] group-hover:scale-105 transition-transform">
+            <span
+              className="material-symbols-outlined text-[26px]"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              favorite
+            </span>
+          </div>
+        </button>
+
+        {/* 4. Memories Tab */}
+        <button
+          onClick={() => onNavigate('birthday')}
+          className={`flex flex-col items-center justify-center transition-all duration-200 group ${
+            isMemories ? 'text-[#E60039]' : 'text-[#7A6E73] hover:text-[#E60039]'
           }`}
-          title="Settings & Profile"
+          title="Memories & Wishlist"
         >
           <span
-            className="material-symbols-outlined text-[24px]"
-            data-weight={isSettings ? 'fill' : 'none'}
-            style={{ fontVariationSettings: isSettings ? "'FILL' 1" : "'FILL' 0" }}
+            className="material-symbols-outlined text-[24px] transition-transform group-hover:scale-110"
+            style={{ fontVariationSettings: isMemories ? "'FILL' 1" : "'FILL' 0" }}
           >
-            settings
+            photo_library
           </span>
+          <span className="text-[10px] font-bold tracking-tight mt-0.5">Memories</span>
+          {isMemories && <span className="w-1 h-1 rounded-full bg-[#E60039] mt-0.5" />}
+        </button>
+
+        {/* 5. Profile Tab */}
+        <button
+          onClick={() => onNavigate('profile')}
+          className={`flex flex-col items-center justify-center transition-all duration-200 group ${
+            isProfile ? 'text-[#E60039]' : 'text-[#7A6E73] hover:text-[#E60039]'
+          }`}
+          title="Profile & Settings"
+        >
+          <span
+            className="material-symbols-outlined text-[24px] transition-transform group-hover:scale-110"
+            style={{ fontVariationSettings: isProfile ? "'FILL' 1" : "'FILL' 0" }}
+          >
+            person
+          </span>
+          <span className="text-[10px] font-bold tracking-tight mt-0.5">Profile</span>
+          {isProfile && <span className="w-1 h-1 rounded-full bg-[#E60039] mt-0.5" />}
         </button>
       </div>
     </nav>

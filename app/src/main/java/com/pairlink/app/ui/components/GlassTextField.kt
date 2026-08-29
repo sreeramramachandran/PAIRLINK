@@ -23,19 +23,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pairlink.app.core.designsystem.DesignTokens
 
 /**
- * Reusable Glassmorphism TextField with glowing border when focused.
+ * Reusable Light Neumorphic TextField for PairLink.
  */
 @Composable
 fun GlassTextField(
@@ -56,41 +54,30 @@ fun GlassTextField(
     var isFocused by remember { mutableStateOf(false) }
 
     val borderColor by animateColorAsState(
-        targetValue = if (isFocused) DesignTokens.Colors.SoftPink else Color.White.copy(alpha = 0.20f),
+        targetValue = if (isFocused) DesignTokens.Colors.PrimaryCrimson else Color(0xFFF4C2CC),
         label = "BorderColor"
     )
 
-    val backgroundColor = if (isUnderlineOnly) {
-        Color.Transparent
-    } else {
-        if (isFocused) Color.White.copy(alpha = 0.15f) else Color.White.copy(alpha = 0.08f)
-    }
+    val backgroundColor = Color.White.copy(alpha = 0.95f)
 
-    val boxModifier = if (isUnderlineOnly) {
-        modifier
-            .fillMaxWidth()
-            .onFocusChanged { isFocused = it.isFocused }
-            .padding(vertical = 4.dp)
-    } else {
-        modifier
-            .fillMaxWidth()
-            .shadow(
-                elevation = if (isFocused) 8.dp else 2.dp,
-                shape = shape,
-                spotColor = if (isFocused) DesignTokens.Colors.SoftPink.copy(alpha = 0.4f) else Color.Transparent
-            )
-            .clip(shape)
-            .background(backgroundColor)
-            .border(
-                border = BorderStroke(
-                    width = if (isFocused) 1.5.dp else 1.dp,
-                    color = borderColor
-                ),
-                shape = shape
-            )
-            .onFocusChanged { isFocused = it.isFocused }
-            .padding(horizontal = 16.dp, vertical = 14.dp)
-    }
+    val boxModifier = modifier
+        .fillMaxWidth()
+        .shadow(
+            elevation = if (isFocused) 6.dp else 2.dp,
+            shape = shape,
+            spotColor = if (isFocused) DesignTokens.Colors.PrimaryCrimson.copy(alpha = 0.2f) else Color.Transparent
+        )
+        .clip(shape)
+        .background(backgroundColor)
+        .border(
+            border = BorderStroke(
+                width = if (isFocused) 1.5.dp else 1.dp,
+                color = borderColor
+            ),
+            shape = shape
+        )
+        .onFocusChanged { isFocused = it.isFocused }
+        .padding(horizontal = 16.dp, vertical = 14.dp)
 
     BasicTextField(
         value = value,
@@ -100,7 +87,7 @@ fun GlassTextField(
             color = DesignTokens.Colors.TextPrimary,
             fontSize = 15.sp
         ),
-        cursorBrush = SolidColor(DesignTokens.Colors.PrimaryPink),
+        cursorBrush = SolidColor(DesignTokens.Colors.PrimaryCrimson),
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
@@ -119,7 +106,7 @@ fun GlassTextField(
                     if (value.isEmpty()) {
                         Text(
                             text = placeholder,
-                            color = DesignTokens.Colors.TextSecondary.copy(alpha = 0.5f),
+                            color = DesignTokens.Colors.TextSecondary.copy(alpha = 0.6f),
                             fontSize = 15.sp
                         )
                     }

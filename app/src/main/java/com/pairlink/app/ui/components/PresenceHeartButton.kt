@@ -55,9 +55,7 @@ data class FloatingHeartParticle(
 )
 
 /**
- * Signature Presence Heart Button for PairLink Home screen.
- * Supports continuous pulse animation, press-and-hold gestures,
- * spawn of floating heart particles, and heartbeat counts.
+ * Signature Presence Heart Button for PairLink.
  */
 @Composable
 fun PresenceHeartButton(
@@ -71,7 +69,7 @@ fun PresenceHeartButton(
     var isPressed by remember { mutableStateOf(false) }
     val floatingHearts = remember { mutableStateListOf<FloatingHeartParticle>() }
 
-    // Breathing pulse animation (faster when partner is holding)
+    // Breathing pulse animation
     val infiniteTransition = rememberInfiniteTransition(label = "HeartBreathing")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 1.0f,
@@ -130,8 +128,7 @@ fun PresenceHeartButton(
                     .background(
                         Brush.radialGradient(
                             colors = listOf(
-                                if (isPartnerHolding) DesignTokens.Colors.DangerRose.copy(alpha = 0.75f)
-                                else DesignTokens.Colors.PrimaryPink.copy(alpha = if (isPressed) 0.65f else 0.35f),
+                                DesignTokens.Colors.PrimaryCrimson.copy(alpha = if (isPressed || isPartnerHolding) 0.45f else 0.20f),
                                 Color.Transparent
                             )
                         )
@@ -144,20 +141,19 @@ fun PresenceHeartButton(
                     .size(88.dp)
                     .scale(pressScale * pulseScale)
                     .shadow(
-                        elevation = if (isPressed || isPartnerHolding) 24.dp else 12.dp,
+                        elevation = if (isPressed || isPartnerHolding) 20.dp else 10.dp,
                         shape = CircleShape,
-                        ambientColor = if (isPartnerHolding) DesignTokens.Colors.DangerRose.copy(alpha = 0.8f) else DesignTokens.Colors.SoftPink.copy(alpha = 0.6f),
-                        spotColor = if (isPartnerHolding) DesignTokens.Colors.DangerRose else DesignTokens.Colors.PrimaryPink
+                        ambientColor = DesignTokens.Colors.PrimaryCrimson.copy(alpha = 0.4f),
+                        spotColor = DesignTokens.Colors.PrimaryCrimson
                     )
                     .clip(CircleShape)
-                    .background(if (isPartnerHolding) DesignTokens.Colors.DangerRose else DesignTokens.Colors.PrimaryPink)
-                    .border(1.dp, Color.White.copy(alpha = 0.5f), CircleShape)
+                    .background(DesignTokens.Colors.PrimaryCrimson)
+                    .border(2.dp, Color.White, CircleShape)
                     .pointerInput(Unit) {
                         detectTapGestures(
                             onPress = {
                                 isPressed = true
                                 onHeartPressed()
-                                // Spawn floating heart
                                 val particle = FloatingHeartParticle(
                                     id = System.currentTimeMillis(),
                                     offsetX = Random.nextFloat() * 60f - 30f,
@@ -177,17 +173,17 @@ fun PresenceHeartButton(
                 Icon(
                     imageVector = Icons.Default.Favorite,
                     contentDescription = "Send Love Burst",
-                    tint = if (isPartnerHolding) Color.White else DesignTokens.Colors.DeepPinkText,
+                    tint = Color.White,
                     modifier = Modifier.size(40.dp)
                 )
             }
         }
 
-        // Subtitle instructions & partner holding status
+        // Subtitle instructions
         if (isPartnerHolding) {
             Text(
                 text = "❤️ $partnerName is holding with you...",
-                color = DesignTokens.Colors.PrimaryPink,
+                color = DesignTokens.Colors.PrimaryCrimson,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 0.5.sp
@@ -195,18 +191,18 @@ fun PresenceHeartButton(
         } else {
             Text(
                 text = "PRESS & HOLD",
-                color = DesignTokens.Colors.TextSecondary.copy(alpha = 0.8f),
+                color = DesignTokens.Colors.TextSecondary,
                 fontSize = 11.sp,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.Bold,
                 letterSpacing = 1.5.sp
             )
 
             if (heartbeatCount > 0) {
                 Text(
                     text = "$heartbeatCount heartbeats sent today",
-                    color = DesignTokens.Colors.PrimaryPink,
+                    color = DesignTokens.Colors.PrimaryCrimson,
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -215,7 +211,6 @@ fun PresenceHeartButton(
 
 /**
  * Reusable Glowing Presence Ring around Partner Avatar.
- * Maps PresenceRingState to animated glow colors (Gray, Green, Blue, Yellow, Orange, Red/Pink Pulsing).
  */
 @Composable
 fun PresenceRing(
@@ -225,12 +220,12 @@ fun PresenceRing(
     content: @Composable () -> Unit
 ) {
     val targetColor = when (ringState) {
-        PresenceRingState.OFFLINE -> Color(0xFF6B7280)  // Gray
-        PresenceRingState.ONLINE -> DesignTokens.Colors.OnlineGreen // Green
-        PresenceRingState.SLEEPING -> Color(0xFF60A5FA) // Blue
-        PresenceRingState.BUSY -> Color(0xFFFBBF24)     // Yellow
-        PresenceRingState.DRIVING -> Color(0xFFFB923C)  // Orange
-        PresenceRingState.HOLDING -> DesignTokens.Colors.DangerRose // Red/Vibrant Pink Pulsing
+        PresenceRingState.OFFLINE -> Color(0xFF9CA3AF)
+        PresenceRingState.ONLINE -> DesignTokens.Colors.OnlineGreen
+        PresenceRingState.SLEEPING -> Color(0xFF60A5FA)
+        PresenceRingState.BUSY -> Color(0xFFFBBF24)
+        PresenceRingState.DRIVING -> Color(0xFFFB923C)
+        PresenceRingState.HOLDING -> DesignTokens.Colors.PrimaryCrimson
     }
 
     val animatedColor by animateColorAsState(

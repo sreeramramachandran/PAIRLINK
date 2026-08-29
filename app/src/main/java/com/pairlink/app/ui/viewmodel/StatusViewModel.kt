@@ -1,12 +1,17 @@
 package com.pairlink.app.ui.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pairlink.app.core.util.StickerStorageHelper
+import com.pairlink.app.data.repository.FirebaseStickerUploader
 import com.pairlink.app.data.repository.NotificationRepository
 import com.pairlink.app.data.repository.StatusRepository
 import com.pairlink.app.domain.model.NotificationType
 import com.pairlink.app.domain.model.StatusItem
+import com.pairlink.app.domain.model.StickerItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +32,8 @@ data class StatusUiState(
 @HiltViewModel
 class StatusViewModel @Inject constructor(
     private val statusRepository: StatusRepository,
-    private val notificationRepository: NotificationRepository
+    private val notificationRepository: NotificationRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _errorMessage = MutableStateFlow<String?>(null)
@@ -42,10 +48,10 @@ class StatusViewModel @Inject constructor(
         statusRepository.availableStatuses,
         _errorMessage,
         _isLoading
-    ) { status, updated, statuses, error, loading ->
+    ) { status, lastUpdated, statuses, error, loading ->
         StatusUiState(
             currentStatus = status,
-            lastUpdated = updated,
+            lastUpdated = lastUpdated,
             availableStatuses = statuses,
             errorMessage = error,
             isLoading = loading
@@ -88,6 +94,33 @@ class StatusViewModel @Inject constructor(
         }
     }
 
+    fun saveStatusSticker(sticker: StickerItem, onComplete: () -> Unit = {}) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            val cloudUrl = FirebaseStickerUploader.uploadStickerIfNeeded(context, sticker.urlOrRes)
+            StickerStorageHelper.updateStickerCloudUrl(context, sticker.id, cloudUrl)
+
+            val stickerRes = statusRepository.setStatusSticker(cloudUrl, sticker.id)
+            val statusRes = statusRepository.setStatus(sticker.name, null)
+
+            _isLoading.value = false
+
+            if (stickerRes.isSuccess && statusRes.isSuccess) {
+                notificationRepository.addNotification(
+                    title = "Status sticker updated",
+                    message = "Your status sticker was updated in your sanctuary. 📍",
+                    type = NotificationType.STATUS_UPDATED,
+                    iconName = "work"
+                )
+                onComplete()
+            } else {
+                _errorMessage.value = "Failed to update status sticker."
+            }
+        }
+    }
+
     fun addCustomStatus(status: String, onComplete: () -> Unit = {}) {
         viewModelScope.launch {
             val result = statusRepository.addCustomStatus(status)
@@ -99,6 +132,8 @@ class StatusViewModel @Inject constructor(
                     iconName = "work"
                 )
                 onComplete()
+            }.onFailure { e ->
+                _errorMessage.value = e.message ?: "Failed to add status."
             }
         }
     }

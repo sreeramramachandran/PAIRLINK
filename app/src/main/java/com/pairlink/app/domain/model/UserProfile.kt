@@ -17,12 +17,22 @@ data class UserProfile(
     val dateOfBirth: String = "",
     val profileImageUrl: String = "",
     val mood: String = "Happy",
+    val currentMoodStickerUrl: String = "",
+    val currentMoodStickerId: String = "",
     val status: String = "Available",
+    val currentStatusStickerUrl: String = "",
+    val currentStatusStickerId: String = "",
     val customMoods: List<String> = emptyList(),
     val customStatuses: List<String> = emptyList(),
     val relationshipDate: String? = null,
+    val nextMeetingDate: String? = null,
     val partnerNickname: String = "",
     val statusMessage: String = "Connected to our private sanctuary. ✨",
+    val latitude: Double = 22.7196,
+    val longitude: Double = 75.8577,
+    val locationName: String = "Indore, India",
+    val weatherTemp: String = "25°",
+    val weatherCondition: String = "Partly Cloudy",
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
     val fcmToken: String? = null
@@ -35,6 +45,7 @@ data class UserProfile(
     val currentMood: String get() = mood
     val currentStatus: String get() = status
     val relationshipStartDate: String get() = relationshipDate ?: ""
+    val nextMeetingStartDate: String get() = nextMeetingDate ?: ""
     val isPaired: Boolean get() = !partnerUid.isNullOrBlank() || connectionStatus == ConnectionStatus.PAIRED.name
 
     val currentConnectionStatus: ConnectionStatus get() = try {

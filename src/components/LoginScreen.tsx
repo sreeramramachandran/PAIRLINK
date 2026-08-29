@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ScreenType } from '../types';
+import { PairLinkLogo } from './PairLinkLogo';
 
 interface LoginScreenProps {
   onNavigate: (screen: ScreenType) => void;
@@ -23,22 +24,20 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   return (
     <div className="min-h-screen flex items-center justify-center p-6 relative z-10">
       <main className="w-full max-w-md">
-        <div className="glass-panel rounded-[28px] p-8 md:p-10 flex flex-col items-center bg-white/5 border border-white/15 shadow-[0_16px_48px_rgba(0,0,0,0.5)] animate-enter">
-          {/* Brand Anchor */}
-          <div className="mb-8 text-center">
-            <h1 className="font-display text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#ffcbd5] to-[#dfbbe4] bg-clip-text text-transparent tracking-tight">
-              PairLink
-            </h1>
-            <p className="font-body text-[16px] text-[#d6c1c5] mt-2">
+        <div className="bg-white/90 backdrop-blur-2xl rounded-3xl p-8 md:p-10 flex flex-col items-center border border-white/90 shadow-[0_16px_40px_rgba(230,0,57,0.1),0_4px_16px_rgba(0,0,0,0.04)] modal-animate">
+          {/* Brand Logo */}
+          <div className="mb-6 text-center">
+            <PairLinkLogo size="lg" showTagline={true} />
+            <p className="font-body text-sm text-[#7A6E73] font-medium mt-3">
               Enter your sanctuary.
             </p>
           </div>
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5">
+          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
             {/* Phone Number Input */}
             <div className="relative w-full">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#d6c1c5]/70 pointer-events-none text-[20px]">
+              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#7A6E73] pointer-events-none text-[20px]">
                 call
               </span>
               <input
@@ -47,13 +46,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Phone Number"
                 required
-                className="w-full bg-transparent border-0 border-b border-white/20 text-[#dae2fd] placeholder:text-[#d6c1c5]/50 pl-12 pr-4 py-3 font-body text-[16px] glass-input transition-colors rounded-none focus:ring-0"
+                className="w-full bg-white/90 border border-rose-200/80 text-[#2D2226] placeholder:text-[#7A6E73]/60 pl-12 pr-4 py-3.5 font-body text-sm rounded-2xl focus:border-[#E60039] focus:ring-4 focus:ring-[#E60039]/10 outline-none transition-all"
               />
             </div>
 
             {/* Password Input */}
-            <div className="relative w-full mt-1">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#d6c1c5]/70 pointer-events-none text-[20px]">
+            <div className="relative w-full">
+              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#7A6E73] pointer-events-none text-[20px]">
                 lock
               </span>
               <input
@@ -62,12 +61,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
                 required
-                className="w-full bg-transparent border-0 border-b border-white/20 text-[#dae2fd] placeholder:text-[#d6c1c5]/50 pl-12 pr-12 py-3 font-body text-[16px] glass-input transition-colors rounded-none focus:ring-0"
+                className="w-full bg-white/90 border border-rose-200/80 text-[#2D2226] placeholder:text-[#7A6E73]/60 pl-12 pr-12 py-3.5 font-body text-sm rounded-2xl focus:border-[#E60039] focus:ring-4 focus:ring-[#E60039]/10 outline-none transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#d6c1c5]/70 hover:text-[#ffcbd5] transition-colors focus:outline-none p-1"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#7A6E73] hover:text-[#E60039] transition-colors focus:outline-none p-1"
                 aria-label="Toggle password visibility"
               >
                 <span className="material-symbols-outlined text-[20px]">
@@ -77,11 +76,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             </div>
 
             {/* Forgot Password Link */}
-            <div className="flex justify-end mt-0.5">
+            <div className="flex justify-end">
               <button
                 type="button"
                 onClick={() => alert('Password reset link sent to your registered phone number!')}
-                className="font-body text-xs text-[#ffcbd5] hover:text-[#f4a7b9] transition-colors hover:underline"
+                className="font-body text-xs text-[#E60039] hover:underline font-semibold"
               >
                 Forgot Password?
               </button>
@@ -90,7 +89,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             {/* Login Button */}
             <button
               type="submit"
-              className="w-full mt-4 glass-panel text-[#ffcbd5] font-display font-medium text-lg py-4 rounded-full glow-button flex items-center justify-center gap-2 border border-white/20 bg-white/10 hover:bg-white/20 active:scale-98"
+              className="w-full mt-2 glow-button text-white font-display font-bold text-base py-3.5 rounded-full flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
             >
               <span>Login</span>
               <span className="material-symbols-outlined text-[20px]">
@@ -100,11 +99,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           </form>
 
           {/* Register Link */}
-          <div className="mt-8 text-center font-body text-sm text-[#d6c1c5]">
+          <div className="mt-8 text-center font-body text-sm text-[#7A6E73]">
             Don't have an account?{' '}
             <button
               onClick={() => onNavigate('register')}
-              className="text-[#dfbbe4] hover:text-[#fcd7ff] font-semibold transition-colors underline underline-offset-4 decoration-[#dfbbe4]/40 hover:decoration-[#dfbbe4]"
+              className="text-[#E60039] hover:text-[#C4002F] font-extrabold transition-colors underline underline-offset-4 decoration-[#E60039]/40"
             >
               Register
             </button>

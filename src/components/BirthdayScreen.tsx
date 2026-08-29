@@ -46,121 +46,118 @@ export const BirthdayScreen: React.FC<BirthdayScreenProps> = ({
   const daysLeft = calculateDaysLeft();
 
   return (
-    <div className="pt-24 pb-32 px-6 max-w-lg mx-auto relative z-10">
+    <div className="pt-20 pb-32 px-4 sm:px-6 max-w-lg mx-auto relative z-10 space-y-6">
       {/* Partner Profile Section */}
-      <section className="flex flex-col items-center mb-8 relative">
-        <div className="relative w-44 h-48 mb-4">
-          {/* Glowing Aura */}
-          <div className="absolute inset-0 rounded-full bg-[#ffcbd5]/20 blur-2xl animate-pulse" />
-          <img
-            src={partner.avatarUrl}
-            alt={partner.name}
-            className="w-full h-full rounded-full object-cover border-2 border-white/20 shadow-[0_0_40px_rgba(244,167,185,0.3)] relative z-10"
-          />
+      <section className="flex flex-col items-center text-center pt-2">
+        <div className="relative w-36 h-36 mb-3">
+          <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-xl p-0.5 bg-white relative z-10">
+            <img
+              src={partner.avatarUrl}
+              alt={partner.name}
+              className="w-full h-full rounded-full object-cover"
+            />
+          </div>
           {/* Floating decorative hearts */}
           <span
-            className="material-symbols-outlined absolute top-4 -right-2 text-[#ffcbd5] floating-heart z-20 text-2xl drop-shadow-[0_0_8px_rgba(244,167,185,0.8)]"
-            data-weight="fill"
+            className="material-symbols-outlined absolute top-2 -right-2 text-[#E60039] floating-heart z-20 text-2xl"
             style={{ fontVariationSettings: "'FILL' 1" }}
           >
             favorite
           </span>
           <span
-            className="material-symbols-outlined absolute bottom-6 -left-4 text-[#ffcbcf] floating-heart z-20 text-xl drop-shadow-[0_0_8px_rgba(255,203,207,0.8)]"
+            className="material-symbols-outlined absolute bottom-4 -left-3 text-[#FF3366] floating-heart z-20 text-xl"
             style={{ animationDelay: '1s', fontVariationSettings: "'FILL' 1" }}
           >
             favorite
           </span>
         </div>
 
-        <h2 className="font-display font-bold text-2xl md:text-3xl text-[#dae2fd] mb-1">
+        <h2 className="font-display font-extrabold text-2xl text-[#2D2226] mb-0.5">
           {partner.name}'s Birthday
         </h2>
-        <p className="font-body text-base text-[#d6c1c5] text-center">
-          Let's make it unforgettable.
+        <p className="font-body text-xs text-[#7A6E73] font-medium">
+          Let's make their day unforgettable.
         </p>
       </section>
 
       {/* Countdown Card */}
-      <section className="glass-card rounded-[24px] p-6 mb-6 relative overflow-hidden glow-effect shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] bg-white/10 border border-white/20">
-        <div className="relative z-10 flex flex-col items-center text-center py-4">
-          <span className="font-body text-xs text-[#ffcbd5] tracking-widest uppercase font-semibold mb-2">
+      <section className="bg-white/90 backdrop-blur-2xl rounded-3xl p-6 border border-white/90 shadow-[0_12px_36px_-6px_rgba(230,0,57,0.08)] relative overflow-hidden">
+        <div className="relative z-10 flex flex-col items-center text-center py-2">
+          <span className="font-body text-xs text-[#E60039] tracking-widest uppercase font-bold mb-1">
             Countdown
           </span>
-          <div className="font-display text-[64px] leading-none font-bold bg-gradient-to-b from-white to-[#ffcbd5] bg-clip-text text-transparent drop-shadow-[0_4px_12px_rgba(255,203,213,0.3)] mb-2">
+          <div className="font-display text-[56px] leading-none font-extrabold text-[#E60039] mb-1">
             {daysLeft}
           </div>
-          <span className="font-display text-lg text-[#d6c1c5]">
+          <span className="font-display font-bold text-sm text-[#2D2226]">
             Days Left
           </span>
         </div>
 
-        <div className="mt-4 border-t border-white/10 pt-4 flex justify-between items-center px-2">
+        <div className="mt-4 border-t border-rose-100 pt-4 flex justify-between items-center px-1">
           <div className="flex items-center gap-2">
             <span
-              className="material-symbols-outlined text-[#ffcbcf]"
-              data-weight="fill"
+              className="material-symbols-outlined text-[#E60039]"
               style={{ fontVariationSettings: "'FILL' 1" }}
             >
               cake
             </span>
-            <span className="font-body text-base text-[#dae2fd] font-medium">
+            <span className="font-body text-xs text-[#2D2226] font-bold">
               Oct 24th
             </span>
           </div>
           <button
             onClick={() => alert('Special birthday planner active! Added surprise date task to calendar.')}
-            className="bg-[#ffcbd5]/20 hover:bg-[#ffcbd5]/30 border border-[#ffcbd5]/30 px-4 py-2 rounded-full font-body text-xs font-semibold text-[#ffcbd5] transition-colors flex items-center gap-2 backdrop-blur-xl active:scale-95 cursor-pointer"
+            className="glow-button px-4 py-2 rounded-full font-display font-bold text-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer"
           >
             <span className="material-symbols-outlined text-[16px]">
               edit_calendar
             </span>
-            Plan
+            <span>Plan Birthday</span>
           </button>
         </div>
       </section>
 
       {/* Gift Ideas Section */}
-      <section className="glass-card rounded-2xl p-5 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] bg-white/10 border border-white/20">
+      <section className="bg-white/90 backdrop-blur-2xl rounded-3xl p-5 border border-white/90 shadow-[0_10px_30px_rgba(230,0,57,0.07)]">
         <div
           onClick={() => setShowAddWishlist(!showAddWishlist)}
-          className="flex items-center gap-4 cursor-pointer"
+          className="flex items-center gap-3.5 cursor-pointer"
         >
-          <div className="w-12 h-12 rounded-full bg-[#593d5f]/50 flex items-center justify-center border border-[#fcd7ff]/20">
+          <div className="w-11 h-11 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-[#E60039]">
             <span
-              className="material-symbols-outlined text-[#dfbbe4] text-2xl"
-              data-weight="fill"
+              className="material-symbols-outlined text-2xl"
               style={{ fontVariationSettings: "'FILL' 1" }}
             >
               redeem
             </span>
           </div>
           <div className="flex-1">
-            <h3 className="font-display font-medium text-lg text-[#dae2fd]">
+            <h3 className="font-display font-bold text-sm text-[#2D2226]">
               Gift Ideas Wishlist
             </h3>
-            <p className="font-body text-xs text-[#d6c1c5]">
+            <p className="font-body text-xs text-[#7A6E73] font-medium">
               {wishlist.length} items saved
             </p>
           </div>
-          <span className="material-symbols-outlined text-[#d6c1c5]">
+          <span className="material-symbols-outlined text-[#7A6E73]">
             {showAddWishlist ? 'expand_less' : 'chevron_right'}
           </span>
         </div>
 
         {/* Wishlist Items List & Form */}
         {showAddWishlist && (
-          <div className="mt-4 pt-4 border-t border-white/10 space-y-3">
+          <div className="mt-4 pt-4 border-t border-rose-100 space-y-3">
             <div className="space-y-2">
               {wishlist.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10"
+                  className="flex items-center justify-between p-3 rounded-2xl bg-rose-50/60 border border-rose-100"
                 >
-                  <span className="font-body text-sm text-[#dae2fd]">
+                  <span className="font-body text-xs text-[#2D2226] font-semibold">
                     🎁 {item.title}
                   </span>
-                  <span className="text-xs text-[#ffcbd5] font-semibold">
+                  <span className="text-[10px] text-[#E60039] font-extrabold uppercase">
                     Saved
                   </span>
                 </div>
@@ -173,11 +170,11 @@ export const BirthdayScreen: React.FC<BirthdayScreenProps> = ({
                 value={newItemTitle}
                 onChange={(e) => setNewItemTitle(e.target.value)}
                 placeholder="Add gift idea (e.g. Silk Scarf)..."
-                className="glass-input flex-1 py-2.5 px-4 rounded-xl text-sm font-body bg-white/5"
+                className="flex-1 bg-white border border-rose-200/80 px-4 py-2.5 rounded-2xl text-xs text-[#2D2226] focus:border-[#E60039] outline-none font-body"
               />
               <button
                 type="submit"
-                className="bg-[#ffcbd5] text-[#521f2e] px-4 py-2.5 rounded-xl font-body text-xs font-bold hover:bg-[#ffd9e0] transition-colors"
+                className="glow-button px-4 py-2.5 rounded-2xl font-display font-bold text-xs whitespace-nowrap cursor-pointer active:scale-95"
               >
                 Add
               </button>

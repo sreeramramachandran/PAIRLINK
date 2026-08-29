@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ScreenType } from '../types';
+import { PairLinkLogo } from './PairLinkLogo';
 
 interface ConnectScreenProps {
   onNavigate: (screen: ScreenType) => void;
@@ -21,56 +22,55 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 relative z-10">
-      <main className="w-full max-w-md mx-auto my-auto flex flex-col items-center justify-center py-10">
+      <main className="w-full max-w-md mx-auto my-auto flex flex-col items-center justify-center py-8">
         {/* Header Text */}
         <div className="w-full text-center mb-6">
-          <h1 className="font-display text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#ffcbd5] to-[#dfbbe4] bg-clip-text text-transparent mb-2">
-            Connect
-          </h1>
-          <p className="font-display text-xl text-[#d6c1c5]">
-            With Your Partner
+          <PairLinkLogo size="lg" showTagline={true} />
+          <p className="font-display text-lg font-extrabold text-[#2D2226] mt-3">
+            Connect With Your Partner
           </p>
         </div>
 
-        {/* Romantic Illustration Area */}
-        <div className="w-full aspect-square max-w-[260px] mx-auto mb-8 relative rounded-full overflow-hidden shadow-[0_0_40px_rgba(244,167,185,0.2)] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-gradient-to-tr from-[#ffcbd5]/20 to-[#dfbbe4]/20 rounded-full animate-pulse blur-xl" />
-          <img
-            src="https://lh3.googleusercontent.com/aida/AP1WRLtnEh5Gey16uCEtGEQFj00k24zPciWv2WzuPZBGzV2DoisOstpWwdi6GEykFCvrCsrS69tjqn5eQumJZu3gg5ifYYVAIVQcduPTHIsmzIvsArs5VjOw6LCC5_yUs0PBjOARp5qhBqhRrRproE3KL9PFML1fDd3AJhgyT1RMBv56hkBtPzEVg0wLbt6vUMiznDmCiJCoRr6liseo3B5iZf5wURfOmz1me2QbfPKmNKudpG2KuWvC1qKBUdLi"
-            alt="Romantic glass hearts illustration"
-            className="w-full h-full object-cover rounded-full mix-blend-screen opacity-90 relative z-10"
-          />
+        {/* Romantic 3D Heart Graphics */}
+        <div className="w-full aspect-square max-w-[220px] mx-auto mb-6 relative rounded-full flex items-center justify-center p-4">
+          <div className="w-40 h-40 rounded-full bg-gradient-to-tr from-rose-100 via-pink-50 to-rose-200 border-4 border-white shadow-xl flex items-center justify-center relative overflow-hidden">
+            <span
+              className="material-symbols-outlined text-[80px] text-[#E60039] animate-pulse"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              favorite
+            </span>
+          </div>
         </div>
 
         {/* Pairing Form Card */}
         <form
           onSubmit={handleSubmit}
-          className="glass-card rounded-2xl w-full p-6 flex flex-col gap-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] bg-white/10"
+          className="bg-white/90 backdrop-blur-2xl rounded-3xl w-full p-7 flex flex-col gap-5 border border-white/90 shadow-[0_16px_40px_rgba(230,0,57,0.1),0_4px_16px_rgba(0,0,0,0.04)] modal-animate"
         >
           {/* Input Field */}
           <div className="relative w-full">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#d6c1c5]/60 text-[20px]">
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#7A6E73] text-[20px]">
               vpn_key
             </span>
             <input
               type="text"
               value={targetId}
               onChange={(e) => setTargetId(e.target.value)}
-              placeholder="Enter Partner ID"
+              placeholder="Enter Partner ID (e.g. #PL-8492)"
               required
-              className="glass-input w-full py-4 pl-10 pr-4 font-body text-lg text-center bg-white/5 rounded-xl text-[#dae2fd]"
+              className="w-full bg-white/90 border border-rose-200/80 text-[#2D2226] placeholder:text-[#7A6E73]/60 py-3.5 pl-12 pr-4 font-display font-bold text-center text-lg rounded-2xl focus:border-[#E60039] focus:ring-4 focus:ring-[#E60039]/10 outline-none transition-all"
             />
           </div>
 
           {/* Action Button */}
           <button
             type="submit"
-            className="w-full bg-[#f4a7b9]/40 text-[#ffcbd5] font-body text-xs font-bold py-4 rounded-full glow-button uppercase tracking-widest flex items-center justify-center gap-2 border border-white/20 hover:bg-[#f4a7b9]/60 transition-all active:scale-98"
+            className="w-full glow-button text-white font-display font-bold text-base py-4 rounded-full flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
           >
-            <span>Connect</span>
+            <span>Send Connection Request</span>
             <span
-              className="material-symbols-outlined text-[18px]"
-              data-weight="fill"
+              className="material-symbols-outlined text-[20px]"
               style={{ fontVariationSettings: "'FILL' 1" }}
             >
               favorite
@@ -81,7 +81,7 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
             <button
               type="button"
               onClick={() => alert('Ask your partner to check their PairLink app settings or onboarding screen to view their Partner ID!')}
-              className="text-[#d6c1c5]/80 hover:text-[#ffcbd5] transition-colors font-body text-xs"
+              className="text-[#7A6E73] hover:text-[#E60039] transition-colors font-body text-xs font-semibold"
             >
               Need help finding your ID?
             </button>
