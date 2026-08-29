@@ -14,6 +14,12 @@ data class PartnerProfile(
     val currentMood: String = "Happy",
     val currentStatus: String = "Available",
     val statusMessage: String = "",
+    val nextMeetingDate: String = "",
+    val latitude: Double = 11.0728,
+    val longitude: Double = 76.0740,
+    val locationName: String = "Malappuram, India",
+    val weatherTemp: String = "28°",
+    val weatherCondition: String = "Partly Cloudy",
     val lastActiveTime: String = "Just now"
 ) {
     companion object {
@@ -29,6 +35,12 @@ data class PartnerProfile(
                 currentMood = user.mood.ifBlank { "Happy" },
                 currentStatus = user.status.ifBlank { "Available" },
                 statusMessage = user.statusMessage,
+                nextMeetingDate = user.nextMeetingDate ?: "",
+                latitude = user.latitude,
+                longitude = user.longitude,
+                locationName = user.locationName.ifBlank { "Malappuram, India" },
+                weatherTemp = user.weatherTemp.ifBlank { "28°" },
+                weatherCondition = user.weatherCondition.ifBlank { "Partly Cloudy" },
                 lastActiveTime = "Just now"
             )
         }

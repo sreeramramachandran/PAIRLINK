@@ -6,14 +6,7 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -46,9 +39,6 @@ import com.pairlink.app.ui.components.GradientButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/**
- * Registration Success Screen displaying newly generated Partner ID and copy utility.
- */
 @Composable
 fun RegisterSuccessScreen(
     username: String,
@@ -87,16 +77,16 @@ fun RegisterSuccessScreen(
                 Box(
                     modifier = Modifier
                         .size(88.dp)
-                        .shadow(20.dp, CircleShape, spotColor = DesignTokens.Colors.PrimaryPink)
+                        .shadow(16.dp, CircleShape, spotColor = DesignTokens.Colors.PrimaryCrimson.copy(alpha = 0.3f))
                         .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.15f))
-                        .border(1.dp, Color.White.copy(alpha = 0.3f), CircleShape),
+                        .background(Color(0xFFFFF0F3))
+                        .border(2.dp, DesignTokens.Colors.PrimaryCrimson, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Success",
-                        tint = DesignTokens.Colors.PrimaryPink,
+                        tint = DesignTokens.Colors.PrimaryCrimson,
                         modifier = Modifier.size(44.dp)
                     )
                 }
@@ -104,9 +94,9 @@ fun RegisterSuccessScreen(
                 // Greeting Title
                 Text(
                     text = "Welcome, ${username.ifBlank { "Partner" }}!",
-                    color = DesignTokens.Colors.PrimaryPink,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
+                    color = DesignTokens.Colors.TextPrimary,
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.ExtraBold,
                     letterSpacing = (-0.4).sp,
                     textAlign = TextAlign.Center
                 )
@@ -114,7 +104,7 @@ fun RegisterSuccessScreen(
                 // Partner ID Glass Card
                 GlassCard(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(DesignTokens.Radius.ExtraLarge),
+                    shape = RoundedCornerShape(DesignTokens.Radius.SuperLarge),
                     contentPadding = 24.dp
                 ) {
                     Column(
@@ -126,7 +116,7 @@ fun RegisterSuccessScreen(
                             text = "YOUR PARTNER ID",
                             color = DesignTokens.Colors.TextSecondary,
                             fontSize = 11.sp,
-                            fontWeight = FontWeight.SemiBold,
+                            fontWeight = FontWeight.Bold,
                             letterSpacing = 1.2.sp
                         )
 
@@ -137,9 +127,9 @@ fun RegisterSuccessScreen(
                         ) {
                             Text(
                                 text = partnerId,
-                                color = DesignTokens.Colors.TextPrimary,
+                                color = DesignTokens.Colors.PrimaryCrimson,
                                 fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = FontWeight.ExtraBold,
                                 letterSpacing = 2.sp
                             )
 
@@ -151,12 +141,12 @@ fun RegisterSuccessScreen(
                                     .size(44.dp)
                                     .clip(CircleShape)
                                     .background(
-                                        if (isCopied) DesignTokens.Colors.OnlineGreen.copy(alpha = 0.25f)
-                                        else Color.White.copy(alpha = 0.15f)
+                                        if (isCopied) DesignTokens.Colors.OnlineGreen.copy(alpha = 0.15f)
+                                        else Color(0xFFFFF0F3)
                                     )
                                     .border(
-                                        1.dp,
-                                        if (isCopied) DesignTokens.Colors.OnlineGreen else Color.White.copy(alpha = 0.25f),
+                                        1.5.dp,
+                                        if (isCopied) DesignTokens.Colors.OnlineGreen else DesignTokens.Colors.PrimaryCrimson,
                                         CircleShape
                                     )
                                     .clickable(onClick = ::copyPartnerId),
@@ -165,7 +155,7 @@ fun RegisterSuccessScreen(
                                 Icon(
                                     imageVector = if (isCopied) Icons.Default.Check else Icons.Default.ContentCopy,
                                     contentDescription = "Copy ID",
-                                    tint = if (isCopied) DesignTokens.Colors.OnlineGreen else DesignTokens.Colors.PrimaryPink,
+                                    tint = if (isCopied) DesignTokens.Colors.OnlineGreen else DesignTokens.Colors.PrimaryCrimson,
                                     modifier = Modifier.size(20.dp)
                                 )
                             }
@@ -173,7 +163,7 @@ fun RegisterSuccessScreen(
 
                         Text(
                             text = "Share this secure code with your partner to link your sanctuaries.",
-                            color = DesignTokens.Colors.TextSecondary.copy(alpha = 0.8f),
+                            color = DesignTokens.Colors.TextSecondary,
                             fontSize = 13.sp,
                             textAlign = TextAlign.Center,
                             lineHeight = 18.sp
@@ -181,7 +171,7 @@ fun RegisterSuccessScreen(
                     }
                 }
 
-                // CTA Button
+                // CTA Crimson Gradient Button
                 GradientButton(
                     text = "Connect With Partner",
                     onClick = onNavigateToConnect,
@@ -190,7 +180,7 @@ fun RegisterSuccessScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                             contentDescription = "Connect",
-                            tint = DesignTokens.Colors.DeepPinkText,
+                            tint = Color.White,
                             modifier = Modifier.size(18.dp)
                         )
                     }

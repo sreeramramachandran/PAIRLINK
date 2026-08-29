@@ -185,12 +185,20 @@ fun ProfileScreen(
                                     fontWeight = FontWeight.Bold,
                                     letterSpacing = 1.sp
                                 )
-                                Text(
-                                    text = partner.partnerId.ifBlank { "Not set" },
-                                    color = DesignTokens.Colors.TextPrimary,
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(Color(0xFFFFF0F3))
+                                        .border(1.dp, Color(0xFFFFB3C1), RoundedCornerShape(8.dp))
+                                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                                ) {
+                                    Text(
+                                        text = partner.partnerId.ifBlank { "Not set" },
+                                        color = DesignTokens.Colors.PrimaryCrimson,
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.ExtraBold
+                                    )
+                                }
                             }
                         }
 

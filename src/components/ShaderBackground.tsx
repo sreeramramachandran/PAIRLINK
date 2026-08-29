@@ -49,18 +49,20 @@ export const ShaderBackground: React.FC = () => {
       void main() {
           vec2 uv = v_texCoord;
           
-          vec3 color1 = vec3(0.19, 0.07, 0.38); // Deep Purple
-          vec3 color2 = vec3(0.96, 0.65, 0.73); // Soft Pink
-          vec3 color3 = vec3(0.04, 0.08, 0.18); // Dark Navy
+          // Soft warm blush light background colors matching reference UI
+          vec3 color1 = vec3(0.98, 0.96, 0.96); // Soft warm white #FAF5F5
+          vec3 color2 = vec3(1.0, 0.91, 0.93);  // Soft rose #FFEBF0
+          vec3 color3 = vec3(0.97, 0.93, 0.95);  // Warm blush #FAF0F2
           
-          float noise = sin(uv.x * 3.0 + u_time * 0.5) * cos(uv.y * 2.0 - u_time * 0.3);
-          float noise2 = sin(uv.y * 4.0 + u_time * 0.2) * cos(uv.x * 5.0 + u_time * 0.4);
+          float noise = sin(uv.x * 2.5 + u_time * 0.4) * cos(uv.y * 2.0 - u_time * 0.2);
+          float noise2 = sin(uv.y * 3.5 + u_time * 0.3) * cos(uv.x * 4.0 + u_time * 0.3);
           
-          vec3 finalColor = mix(color1, color2, uv.y + noise * 0.2);
+          vec3 finalColor = mix(color1, color2, uv.y + noise * 0.15);
           finalColor = mix(finalColor, color3, uv.x + noise2 * 0.1);
           
-          float glow = 0.05 / length(uv - vec2(0.5 + sin(u_time * 0.2) * 0.3, 0.5 + cos(u_time * 0.3) * 0.2));
-          finalColor += vec3(0.96, 0.65, 0.73) * glow;
+          // Crimson ambient glow spot
+          float glow = 0.04 / length(uv - vec2(0.5 + sin(u_time * 0.15) * 0.25, 0.3 + cos(u_time * 0.2) * 0.15));
+          finalColor += vec3(0.90, 0.0, 0.22) * glow * 0.25;
           
           gl_FragColor = vec4(finalColor, 1.0);
       }
@@ -120,7 +122,7 @@ export const ShaderBackground: React.FC = () => {
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
       <canvas ref={canvasRef} className="block w-full h-full" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0b1326]/30 via-[#0b1326]/50 to-[#0b1326]/80 mix-blend-overlay pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#FAF5F5]/40 via-[#FAF5F5]/70 to-[#FAF5F5] pointer-events-none" />
     </div>
   );
 };

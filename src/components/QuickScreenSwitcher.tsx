@@ -41,7 +41,7 @@ export const QuickScreenSwitcher: React.FC<QuickScreenSwitcherProps> = ({
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="glass-card text-[#ffcbd5] bg-[#0b1326]/80 hover:bg-[#ffcbd5]/20 border border-white/20 p-2.5 rounded-full shadow-[0_0_20px_rgba(244,167,185,0.4)] flex items-center justify-center transition-all active:scale-90 cursor-pointer"
+        className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-2xl border border-white text-[#E60039] shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer hover:bg-rose-50"
         title="Screen Navigator / View All Screens"
       >
         <span className="material-symbols-outlined text-[20px]">
@@ -51,14 +51,14 @@ export const QuickScreenSwitcher: React.FC<QuickScreenSwitcherProps> = ({
 
       {/* Slide-out Menu */}
       {isOpen && (
-        <div className="absolute right-0 top-12 w-64 glass-card bg-[#0b1326]/90 backdrop-blur-3xl border border-white/20 rounded-2xl p-4 shadow-[0_16px_48px_rgba(0,0,0,0.6)] max-h-[80vh] overflow-y-auto z-50 text-left animate-enter">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
-            <span className="font-display font-bold text-xs text-[#ffcbd5] uppercase tracking-wider">
+        <div className="absolute right-0 top-12 w-64 bg-white/95 backdrop-blur-2xl border border-white/90 rounded-3xl p-4 shadow-[0_16px_40px_rgba(230,0,57,0.15)] max-h-[80vh] overflow-y-auto z-50 text-left modal-animate">
+          <div className="flex items-center justify-between pb-3 border-b border-rose-100 mb-3">
+            <span className="font-display font-extrabold text-xs text-[#E60039] uppercase tracking-wider">
               PairLink Screens (16)
             </span>
             <button
               onClick={() => setIsOpen(false)}
-              className="text-[#d6c1c5] hover:text-[#ffcbd5] text-sm"
+              className="text-[#7A6E73] hover:text-[#E60039] text-sm font-bold"
             >
               ✕
             </button>
@@ -67,7 +67,7 @@ export const QuickScreenSwitcher: React.FC<QuickScreenSwitcherProps> = ({
           <div className="space-y-3">
             {['Auth & Onboarding', 'Main Sanctuary', 'Profile & Settings'].map((groupName) => (
               <div key={groupName} className="space-y-1">
-                <p className="font-body text-[10px] text-[#d6c1c5]/60 uppercase tracking-widest font-semibold px-2 pt-1">
+                <p className="font-body text-[10px] text-[#7A6E73] uppercase tracking-widest font-bold px-2 pt-1">
                   {groupName}
                 </p>
                 {ALL_SCREENS.filter((s) => s.group === groupName).map((screen) => {
@@ -79,14 +79,14 @@ export const QuickScreenSwitcher: React.FC<QuickScreenSwitcherProps> = ({
                         onNavigate(screen.id);
                         setIsOpen(false);
                       }}
-                      className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-body transition-colors cursor-pointer flex items-center justify-between ${
+                      className={`w-full text-left px-3 py-1.5 rounded-xl text-xs font-body transition-colors cursor-pointer flex items-center justify-between ${
                         isActive
-                          ? 'bg-[#ffcbd5]/25 text-[#ffcbd5] font-semibold border border-[#ffcbd5]/40'
-                          : 'text-[#dae2fd] hover:bg-white/10'
+                          ? 'bg-rose-50 text-[#E60039] font-bold border border-rose-200'
+                          : 'text-[#2D2226] hover:bg-rose-50/50'
                       }`}
                     >
                       <span>{screen.label}</span>
-                      {isActive && <span className="text-[10px]">●</span>}
+                      {isActive && <span className="text-[10px] text-[#E60039]">●</span>}
                     </button>
                   );
                 })}

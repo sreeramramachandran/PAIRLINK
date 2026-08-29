@@ -23,15 +23,14 @@ import androidx.compose.ui.unit.dp
 import com.pairlink.app.core.designsystem.DesignTokens
 
 /**
- * Reusable Glassmorphism Card with frosted translucent surface,
- * top-edge radiant highlight, and smooth rounded corners.
+ * Reusable Light Neumorphic & Glassmorphism Card for PairLink.
  */
 @Composable
 fun GlassCard(
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(DesignTokens.Radius.Large),
-    backgroundColor: Color = Color.White.copy(alpha = DesignTokens.Glass.BackgroundAlphaCard),
-    borderColor: Color = Color.White.copy(alpha = DesignTokens.Glass.BorderAlphaSubtle),
+    shape: Shape = RoundedCornerShape(DesignTokens.Radius.SuperLarge),
+    backgroundColor: Color = Color.White.copy(alpha = 0.90f),
+    borderColor: Color = Color.White,
     borderWidth: Dp = DesignTokens.Glass.BorderWidthThin,
     elevation: Dp = DesignTokens.Elevation.Card,
     contentPadding: Dp = DesignTokens.Spacing.Large,
@@ -44,27 +43,15 @@ fun GlassCard(
         .shadow(
             elevation = elevation,
             shape = shape,
-            ambientColor = Color.Black.copy(alpha = 0.45f),
-            spotColor = DesignTokens.Colors.SoftPink.copy(alpha = 0.20f)
+            ambientColor = Color(0xFFE60039).copy(alpha = 0.08f),
+            spotColor = Color.Black.copy(alpha = 0.04f)
         )
         .clip(shape)
-        .background(
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    backgroundColor.copy(alpha = (backgroundColor.alpha * 1.3f).coerceAtMost(0.35f)),
-                    backgroundColor
-                )
-            )
-        )
+        .background(backgroundColor)
         .border(
             border = BorderStroke(
                 width = borderWidth,
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = DesignTokens.Glass.BorderAlphaHighlight),
-                        borderColor
-                    )
-                )
+                color = borderColor
             ),
             shape = shape
         )
@@ -72,7 +59,7 @@ fun GlassCard(
     val finalModifier = if (onClick != null) {
         baseModifier.clickable(
             interactionSource = interactionSource,
-            indication = ripple(color = DesignTokens.Colors.PrimaryPink.copy(alpha = 0.3f)),
+            indication = ripple(color = DesignTokens.Colors.PrimaryCrimson.copy(alpha = 0.15f)),
             onClick = onClick
         )
     } else {

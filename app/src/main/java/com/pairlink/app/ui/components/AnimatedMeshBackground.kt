@@ -22,8 +22,7 @@ import kotlin.math.sin
 
 /**
  * Reusable animated romantic mesh gradient background for PairLink.
- * Recreates the WebGL shader background natively in Jetpack Compose using
- * multi-layered animated radial gradients and floating ambient light blobs.
+ * Light neumorphic soft warm blush palette matching reference screen.
  */
 @Composable
 fun AnimatedMeshBackground(
@@ -45,20 +44,20 @@ fun AnimatedMeshBackground(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(DesignTokens.Colors.BackgroundMidnight)
+            .background(Color(0xFFFAF5F5))
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val width = size.width
             val height = size.height
 
-            // Blob 1: Deep Romantic Purple (moving in upper-left quadrant)
-            val blob1X = width * (0.35f + 0.20f * sin(time))
-            val blob1Y = height * (0.30f + 0.15f * cos(time * 0.8f))
+            // Blob 1: Soft Rose Ambient Glow
+            val blob1X = width * (0.35f + 0.15f * sin(time))
+            val blob1Y = height * (0.25f + 0.10f * cos(time * 0.8f))
             drawCircle(
                 brush = Brush.radialGradient(
                     colors = listOf(
-                        DesignTokens.Colors.DeepPurple.copy(alpha = 0.85f),
-                        DesignTokens.Colors.MutedPurple.copy(alpha = 0.40f),
+                        Color(0xFFFFEBF0).copy(alpha = 0.80f),
+                        Color(0xFFFFF0F3).copy(alpha = 0.40f),
                         Color.Transparent
                     ),
                     center = Offset(blob1X, blob1Y),
@@ -68,14 +67,14 @@ fun AnimatedMeshBackground(
                 radius = width * 0.85f
             )
 
-            // Blob 2: Soft Radiant Pink (moving across center and right)
-            val blob2X = width * (0.65f + 0.25f * cos(time * 0.6f))
-            val blob2Y = height * (0.55f + 0.20f * sin(time * 0.9f))
+            // Blob 2: Crimson Subtle Ambient Glow
+            val blob2X = width * (0.65f + 0.20f * cos(time * 0.6f))
+            val blob2Y = height * (0.45f + 0.15f * sin(time * 0.9f))
             drawCircle(
                 brush = Brush.radialGradient(
                     colors = listOf(
-                        DesignTokens.Colors.SoftPink.copy(alpha = 0.35f),
-                        DesignTokens.Colors.Lavender.copy(alpha = 0.18f),
+                        Color(0xFFE60039).copy(alpha = 0.08f),
+                        Color(0xFFFF809B).copy(alpha = 0.04f),
                         Color.Transparent
                     ),
                     center = Offset(blob2X, blob2Y),
@@ -85,47 +84,13 @@ fun AnimatedMeshBackground(
                 radius = width * 0.70f
             )
 
-            // Blob 3: Lavender / Violet Aura (moving lower-left)
-            val blob3X = width * (0.25f + 0.20f * cos(time * 0.5f + 1.5f))
-            val blob3Y = height * (0.75f + 0.18f * sin(time * 0.7f + 1.0f))
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(
-                        DesignTokens.Colors.Lavender.copy(alpha = 0.30f),
-                        DesignTokens.Colors.DeepPurple.copy(alpha = 0.15f),
-                        Color.Transparent
-                    ),
-                    center = Offset(blob3X, blob3Y),
-                    radius = width * 0.75f
-                ),
-                center = Offset(blob3X, blob3Y),
-                radius = width * 0.75f
-            )
-
-            // Blob 4: Intense Pink Center Glow Pulse
-            val glowRadius = width * (0.45f + 0.08f * sin(time * 1.5f))
-            val glowCenterX = width * (0.50f + 0.10f * sin(time * 0.4f))
-            val glowCenterY = height * (0.40f + 0.08f * cos(time * 0.5f))
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(
-                        DesignTokens.Colors.PrimaryPink.copy(alpha = 0.22f),
-                        Color.Transparent
-                    ),
-                    center = Offset(glowCenterX, glowCenterY),
-                    radius = glowRadius
-                ),
-                center = Offset(glowCenterX, glowCenterY),
-                radius = glowRadius
-            )
-
-            // Ambient Dark Overlay for contrast & depth
+            // Soft White Overlay
             drawRect(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        DesignTokens.Colors.BackgroundMidnight.copy(alpha = 0.30f),
-                        DesignTokens.Colors.BackgroundMidnight.copy(alpha = 0.55f),
-                        DesignTokens.Colors.BackgroundMidnight.copy(alpha = 0.85f)
+                        Color(0xFFFAF5F5).copy(alpha = 0.30f),
+                        Color(0xFFFAF5F5).copy(alpha = 0.60f),
+                        Color(0xFFFAF5F5).copy(alpha = 0.90f)
                     )
                 )
             )

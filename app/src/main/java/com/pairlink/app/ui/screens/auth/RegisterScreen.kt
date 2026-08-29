@@ -10,16 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -58,16 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.pairlink.app.core.designsystem.DesignTokens
-import com.pairlink.app.ui.components.AnimatedMeshBackground
-import com.pairlink.app.ui.components.GlassButton
-import com.pairlink.app.ui.components.GlassCard
-import com.pairlink.app.ui.components.GlassTextField
+import com.pairlink.app.ui.components.*
 import java.time.LocalDate
 
-/**
- * Register Screen matching Stitch design with flexible phone validation, photo picker,
- * DatePickerDialog for DOB, and clear error banners.
- */
 @Composable
 fun RegisterScreen(
     onRegisterSubmit: (username: String, phone: String, dob: String, pin: String, confirmPin: String, imageUri: Uri?) -> Unit,
@@ -141,21 +125,18 @@ fun RegisterScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Header
+                    // Header Logo
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        Text(
-                            text = "PairLink",
-                            color = DesignTokens.Colors.PrimaryPink,
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                        PairLinkLogo(logoSize = 64.dp, showTagline = true)
+                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "Create your digital sanctuary.",
                             color = DesignTokens.Colors.TextSecondary,
-                            fontSize = 14.sp
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
                         )
                     }
 
@@ -170,7 +151,7 @@ fun RegisterScreen(
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(DesignTokens.Radius.Medium))
                                 .background(DesignTokens.Colors.DangerRoseSurface)
-                                .border(1.dp, DesignTokens.Colors.DangerRose.copy(alpha = 0.5f), RoundedCornerShape(DesignTokens.Radius.Medium))
+                                .border(1.dp, DesignTokens.Colors.DangerRose, RoundedCornerShape(DesignTokens.Radius.Medium))
                                 .padding(12.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -183,9 +164,10 @@ fun RegisterScreen(
                             )
                             Text(
                                 text = displayError ?: "",
-                                color = Color(0xFFFFE4E6),
+                                color = DesignTokens.Colors.PrimaryCrimson,
                                 fontSize = 12.sp,
-                                lineHeight = 16.sp
+                                lineHeight = 16.sp,
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     }
@@ -197,10 +179,10 @@ fun RegisterScreen(
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(88.dp)
+                                .size(80.dp)
                                 .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.12f))
-                                .border(1.5.dp, DesignTokens.Colors.PrimaryPink.copy(alpha = 0.5f), CircleShape)
+                                .background(Color(0xFFFFF0F3))
+                                .border(2.dp, DesignTokens.Colors.PrimaryCrimson, CircleShape)
                                 .clickable { photoPickerLauncher.launch("image/*") },
                             contentAlignment = Alignment.Center
                         ) {
@@ -209,7 +191,7 @@ fun RegisterScreen(
                                     model = selectedImageUri,
                                     contentDescription = "Selected Photo",
                                     modifier = Modifier
-                                        .size(88.dp)
+                                        .size(80.dp)
                                         .clip(CircleShape),
                                     contentScale = ContentScale.Crop
                                 )
@@ -217,15 +199,16 @@ fun RegisterScreen(
                                 Icon(
                                     imageVector = Icons.Default.AddAPhoto,
                                     contentDescription = "Add Photo",
-                                    tint = DesignTokens.Colors.PrimaryPink,
-                                    modifier = Modifier.size(32.dp)
+                                    tint = DesignTokens.Colors.PrimaryCrimson,
+                                    modifier = Modifier.size(30.dp)
                                 )
                             }
                         }
                         Text(
                             text = if (selectedImageUri != null) "Photo selected" else "Upload photo (optional)",
-                            color = DesignTokens.Colors.TextSecondary.copy(alpha = 0.7f),
-                            fontSize = 11.sp
+                            color = DesignTokens.Colors.TextSecondary,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium
                         )
                     }
 
@@ -242,61 +225,51 @@ fun RegisterScreen(
                             Icon(
                                 imageVector = Icons.Default.Person,
                                 contentDescription = "User",
-                                tint = DesignTokens.Colors.TextSecondary.copy(alpha = 0.7f),
+                                tint = DesignTokens.Colors.TextSecondary,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
                     )
 
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        GlassTextField(
-                            value = phone,
-                            onValueChange = {
-                                phone = it
-                                localError = null
-                                onClearError()
-                            },
-                            placeholder = "Phone Number (e.g. 9876543210)",
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Call,
-                                    contentDescription = "Phone",
-                                    tint = DesignTokens.Colors.TextSecondary.copy(alpha = 0.7f),
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                        )
-                    }
+                    GlassTextField(
+                        value = phone,
+                        onValueChange = {
+                            phone = it
+                            localError = null
+                            onClearError()
+                        },
+                        placeholder = "Phone Number (e.g. 9876543210)",
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Call,
+                                contentDescription = "Phone",
+                                tint = DesignTokens.Colors.TextSecondary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    )
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { datePickerDialog.show() },
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        GlassTextField(
-                            value = dob,
-                            onValueChange = {
-                                dob = it
-                                localError = null
-                                onClearError()
-                            },
-                            placeholder = "Date of Birth (YYYY-MM-DD)",
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.CalendarMonth,
-                                    contentDescription = "Pick Date",
-                                    tint = DesignTokens.Colors.PrimaryPink,
-                                    modifier = Modifier
-                                        .size(20.dp)
-                                        .clickable { datePickerDialog.show() }
-                                )
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                    GlassTextField(
+                        value = dob,
+                        onValueChange = {
+                            dob = it
+                            localError = null
+                            onClearError()
+                        },
+                        placeholder = "Date of Birth (YYYY-MM-DD)",
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.CalendarMonth,
+                                contentDescription = "Pick Date",
+                                tint = DesignTokens.Colors.PrimaryCrimson,
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable { datePickerDialog.show() }
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
                     GlassTextField(
                         value = password,
@@ -312,7 +285,7 @@ fun RegisterScreen(
                             Icon(
                                 imageVector = Icons.Default.Lock,
                                 contentDescription = "Password",
-                                tint = DesignTokens.Colors.TextSecondary.copy(alpha = 0.7f),
+                                tint = DesignTokens.Colors.TextSecondary,
                                 modifier = Modifier.size(20.dp)
                             )
                         },
@@ -320,7 +293,7 @@ fun RegisterScreen(
                             Icon(
                                 imageVector = if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                                 contentDescription = "Toggle Visibility",
-                                tint = DesignTokens.Colors.TextSecondary.copy(alpha = 0.7f),
+                                tint = DesignTokens.Colors.TextSecondary,
                                 modifier = Modifier
                                     .size(20.dp)
                                     .clickable { isPasswordVisible = !isPasswordVisible }
@@ -328,40 +301,38 @@ fun RegisterScreen(
                         }
                     )
 
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        GlassTextField(
-                            value = confirmPassword,
-                            onValueChange = {
-                                confirmPassword = it
-                                localError = null
-                                onClearError()
-                            },
-                            placeholder = "Confirm Password",
-                            visualTransformation = if (isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.LockReset,
-                                    contentDescription = "Confirm Password",
-                                    tint = DesignTokens.Colors.TextSecondary.copy(alpha = 0.7f),
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            },
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = if (isConfirmPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                                    contentDescription = "Toggle Visibility",
-                                    tint = DesignTokens.Colors.TextSecondary.copy(alpha = 0.7f),
-                                    modifier = Modifier
-                                        .size(20.dp)
-                                        .clickable { isConfirmPasswordVisible = !isConfirmPasswordVisible }
-                                )
-                            }
-                        )
-                    }
+                    GlassTextField(
+                        value = confirmPassword,
+                        onValueChange = {
+                            confirmPassword = it
+                            localError = null
+                            onClearError()
+                        },
+                        placeholder = "Confirm Password",
+                        visualTransformation = if (isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.LockReset,
+                                contentDescription = "Confirm Password",
+                                tint = DesignTokens.Colors.TextSecondary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        },
+                        trailingIcon = {
+                            Icon(
+                                imageVector = if (isConfirmPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                contentDescription = "Toggle Visibility",
+                                tint = DesignTokens.Colors.TextSecondary,
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable { isConfirmPasswordVisible = !isConfirmPasswordVisible }
+                            )
+                        }
+                    )
 
-                    // Register Action Button with explicit helpful feedback
-                    GlassButton(
+                    // Register Crimson Gradient Button
+                    GradientButton(
                         text = if (isLoading) "Registering..." else "Register",
                         enabled = !isLoading,
                         onClick = {
@@ -393,7 +364,7 @@ fun RegisterScreen(
                             {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(18.dp),
-                                    color = DesignTokens.Colors.PrimaryPink,
+                                    color = Color.White,
                                     strokeWidth = 2.dp
                                 )
                             }
@@ -403,7 +374,7 @@ fun RegisterScreen(
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                     contentDescription = "Arrow",
-                                    tint = DesignTokens.Colors.PrimaryPink,
+                                    tint = Color.White,
                                     modifier = Modifier.size(18.dp)
                                 )
                             }
@@ -422,9 +393,9 @@ fun RegisterScreen(
                         )
                         Text(
                             text = "Log in",
-                            color = DesignTokens.Colors.PrimaryPink,
+                            color = DesignTokens.Colors.PrimaryCrimson,
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.ExtraBold,
                             modifier = Modifier.clickable(onClick = onNavigateToLogin)
                         )
                     }

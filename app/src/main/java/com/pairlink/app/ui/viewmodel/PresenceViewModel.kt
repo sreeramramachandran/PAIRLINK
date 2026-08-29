@@ -76,15 +76,23 @@ class PresenceViewModel @Inject constructor(
 
         // Listen for real-time presence & heart pulses from partner
         viewModelScope.launch {
-            var lastHandledPulseTime = System.currentTimeMillis()
+            var lastHandledPulseTime = 0L
+            var lastHandledPulseCount = 0L
             try {
                 presenceRepository.observePresence().collect { doc ->
                     try {
                         val currentUid = authRepository.currentUser.value.uid
                         if (doc != null) {
                             // 1. Partner Heart Tap / Pulse received -> Vibrate partner's phone & record notification
-                            if (doc.pulseSenderUid.isNotBlank() && doc.pulseSenderUid != currentUid && doc.lastPulseTimestamp > lastHandledPulseTime) {
-                                lastHandledPulseTime = doc.lastPulseTimestamp
+                            val isNewPulse = doc.pulseSenderUid.isNotBlank() &&
+                                    doc.pulseSenderUid != currentUid &&
+                                    ((doc.pulseCount > 0L && doc.pulseCount > lastHandledPulseCount) ||
+                                            (doc.lastPulseTimestamp > 0L && doc.lastPulseTimestamp > lastHandledPulseTime))
+
+                            if (isNewPulse) {
+                                if (doc.pulseCount > 0L) lastHandledPulseCount = doc.pulseCount
+                                if (doc.lastPulseTimestamp > 0L) lastHandledPulseTime = doc.lastPulseTimestamp
+
                                 hapticManager.triggerPulseVibration()
 
                                 val partnerName = partnerRepository.partnerProfile.value.name.ifBlank { "Partner" }

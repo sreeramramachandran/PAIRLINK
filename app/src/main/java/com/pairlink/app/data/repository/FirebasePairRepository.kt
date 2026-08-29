@@ -322,6 +322,30 @@ class FirebasePairRepository @Inject constructor(
         }
     }
 
+    override suspend fun saveNextMeetingDate(meetingDate: String): Result<Unit> = withContext(ioDispatcher) {
+        try {
+            val uid = currentUid
+            if (uid.isBlank()) return@withContext Result.failure(IllegalStateException("Not logged in."))
+
+            val userDoc = firestore.collection("users").document(uid).get().await()
+            val partnerUid = userDoc.getString("partnerUid")
+
+            val now = System.currentTimeMillis()
+            val batch = firestore.batch()
+            batch.update(firestore.collection("users").document(uid), "nextMeetingDate", meetingDate, "updatedAt", now)
+            if (!partnerUid.isNullOrBlank()) {
+                batch.update(firestore.collection("users").document(partnerUid), "nextMeetingDate", meetingDate, "updatedAt", now)
+            }
+            batch.commit().await()
+
+            Timber.i("Next meeting date saved for both partners: %s", meetingDate)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Timber.e(e, "Error saving next meeting date: %s", e.message)
+            Result.failure(Exception(e.message ?: "Failed to save next meeting date.", e))
+        }
+    }
+
     override fun observeIncomingRequests(): Flow<List<PairRequest>> = callbackFlow {
         var listener: ListenerRegistration? = null
         var authListener: FirebaseAuth.AuthStateListener? = null

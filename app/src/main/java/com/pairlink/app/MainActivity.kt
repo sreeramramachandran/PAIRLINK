@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            PairLinkTheme {
+                PairLinkTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = DesignTokens.Colors.BackgroundMidnight

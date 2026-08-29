@@ -3,23 +3,14 @@ package com.pairlink.app.ui.screens.anniversary
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.WorkspacePremium
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,22 +25,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pairlink.app.core.designsystem.DesignTokens
-import com.pairlink.app.ui.components.AnimatedMeshBackground
-import com.pairlink.app.ui.components.BottomNavTab
-import com.pairlink.app.ui.components.GlassBottomNavigation
-import com.pairlink.app.ui.components.GlassButton
-import com.pairlink.app.ui.components.GlassCard
-import com.pairlink.app.ui.components.GlassTopBar
+import com.pairlink.app.ui.components.*
 import java.time.LocalDate
 
 /**
- * Anniversary & Milestones Screen celebrating shared journey duration.
- * Once the anniversary date is set, it is locked and permanently immutable.
+ * Anniversary & Milestones Screen celebrating shared journey duration & Next Meeting countdown.
  */
 @Composable
 fun AnniversaryScreen(
     togetherTime: String,
     startDate: String,
+    nextMeetingDaysLeft: String = "27",
+    nextMeetingHoursLeft: String = "14",
+    nextMeetingMinsLeft: String = "32",
+    nextMeetingDateText: String = "24 Dec 2026",
+    nextMeetingRawDate: String = "2026-12-24",
+    onSaveNextMeetingDate: (String) -> Unit = {},
     onSaveStartDate: (String) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     currentTab: BottomNavTab = BottomNavTab.UPDATES,
@@ -78,6 +69,25 @@ fun AnniversaryScreen(
         )
     }
 
+    // Date Picker Dialog for Editable "Next Time Together"
+    val initialNextDate = try {
+        if (nextMeetingRawDate.isNotBlank()) LocalDate.parse(nextMeetingRawDate) else LocalDate.now().plusDays(27)
+    } catch (_: Exception) {
+        LocalDate.now().plusDays(27)
+    }
+    val nextMeetingDatePicker = remember {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val selected = LocalDate.of(year, month + 1, dayOfMonth)
+                onSaveNextMeetingDate(selected.toString())
+            },
+            initialNextDate.year,
+            initialNextDate.monthValue - 1,
+            initialNextDate.dayOfMonth
+        )
+    }
+
     val milestones = listOf(
         Pair("1000 Days Together", "Celebrated our 1000 days of connection."),
         Pair("2 Year Anniversary", "Two amazing years of laughter and growth together."),
@@ -88,9 +98,8 @@ fun AnniversaryScreen(
     AnimatedMeshBackground(modifier = modifier) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
-                // Glass Top Bar with Back Arrow directly returning to Home
                 GlassTopBar(
-                    title = "Anniversary",
+                    title = "Memories & Milestones",
                     showBack = true,
                     onBackClick = onNavigateBack
                 )
@@ -104,31 +113,31 @@ fun AnniversaryScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    // Hero Together Card
+                    // 1. Hero Together Card
                     GlassCard(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(DesignTokens.Radius.SuperLarge),
-                        contentPadding = 28.dp
+                        contentPadding = 24.dp
                     ) {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(72.dp)
-                                    .shadow(20.dp, CircleShape, spotColor = DesignTokens.Colors.Lavender)
+                                    .size(64.dp)
+                                    .shadow(16.dp, CircleShape, spotColor = Color(0xFFE60039))
                                     .clip(CircleShape)
-                                    .background(DesignTokens.Colors.Lavender.copy(alpha = 0.25f))
-                                    .border(1.5.dp, Color.White.copy(alpha = 0.4f), CircleShape),
+                                    .background(Color(0xFFFFF0F3))
+                                    .border(1.5.dp, Color(0xFFFFB3C1), CircleShape),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Favorite,
                                     contentDescription = "Together",
-                                    tint = DesignTokens.Colors.Lavender,
-                                    modifier = Modifier.size(36.dp)
+                                    tint = DesignTokens.Colors.PrimaryCrimson,
+                                    modifier = Modifier.size(32.dp)
                                 )
                             }
 
@@ -142,43 +151,35 @@ fun AnniversaryScreen(
 
                             Text(
                                 text = togetherTime,
-                                color = DesignTokens.Colors.PrimaryPink,
-                                fontSize = 42.sp,
-                                fontWeight = FontWeight.Bold
+                                color = DesignTokens.Colors.PrimaryCrimson,
+                                fontSize = 38.sp,
+                                fontWeight = FontWeight.ExtraBold
                             )
 
                             if (isDateLocked) {
-                                // Locked Permanent Date Display
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(50.dp))
-                                        .background(Color.White.copy(alpha = 0.10f))
-                                        .border(1.dp, Color.White.copy(alpha = 0.25f), RoundedCornerShape(50.dp))
+                                        .background(Color(0xFFFFF0F3))
+                                        .border(1.dp, Color(0xFFFFB3C1), RoundedCornerShape(50.dp))
                                         .padding(horizontal = 14.dp, vertical = 6.dp)
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Lock,
                                         contentDescription = "Locked Date",
-                                        tint = DesignTokens.Colors.PrimaryPink,
+                                        tint = DesignTokens.Colors.PrimaryCrimson,
                                         modifier = Modifier.size(14.dp)
                                     )
                                     Text(
                                         text = "Since $startDate (Locked)",
-                                        color = DesignTokens.Colors.TextPrimary,
+                                        color = Color(0xFF1D1418),
                                         fontSize = 13.sp,
                                         fontWeight = FontWeight.Medium
                                     )
                                 }
                             } else {
-                                // Initial Setup Option
-                                Text(
-                                    text = "No anniversary date set yet",
-                                    color = DesignTokens.Colors.TextSecondary,
-                                    fontSize = 14.sp
-                                )
-
                                 GlassButton(
                                     text = "Set Anniversary Date",
                                     onClick = { datePickerDialog.show() },
@@ -186,17 +187,61 @@ fun AnniversaryScreen(
                                         Icon(
                                             imageVector = Icons.Default.CalendarMonth,
                                             contentDescription = "Set Date",
-                                            tint = DesignTokens.Colors.PrimaryPink,
+                                            tint = DesignTokens.Colors.PrimaryCrimson,
                                             modifier = Modifier.size(16.dp)
                                         )
                                     },
-                                    modifier = Modifier.padding(top = 8.dp)
+                                    modifier = Modifier.padding(top = 4.dp)
                                 )
                             }
                         }
                     }
 
-                    // Milestones Section
+                    // 2. NEXT MEETING COUNTDOWN SECTION
+                    GlassCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                        backgroundColor = Color(0xFFFFF0F3),
+                        contentPadding = 16.dp,
+                        onClick = { nextMeetingDatePicker.show() }
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                    Text(text = "✈️ NEXT TIME TOGETHER", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = DesignTokens.Colors.PrimaryCrimson)
+                                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Date", tint = DesignTokens.Colors.PrimaryCrimson, modifier = Modifier.size(14.dp))
+                                }
+                                Text(text = "Target: $nextMeetingDateText ✏️", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1D1418))
+                            }
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(text = nextMeetingDaysLeft, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF1D1418))
+                                    Text(text = "DAYS", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = DesignTokens.Colors.TextSecondary)
+                                }
+                                Text(text = ":", fontSize = 20.sp, color = DesignTokens.Colors.TextSecondary)
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(text = nextMeetingHoursLeft, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF1D1418))
+                                    Text(text = "HOURS", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = DesignTokens.Colors.TextSecondary)
+                                }
+                                Text(text = ":", fontSize = 20.sp, color = DesignTokens.Colors.TextSecondary)
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(text = nextMeetingMinsLeft, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF1D1418))
+                                    Text(text = "MINS", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = DesignTokens.Colors.TextSecondary)
+                                }
+                            }
+                        }
+                    }
+
+                    // 3. Milestones Section
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -223,20 +268,21 @@ fun AnniversaryScreen(
                                         modifier = Modifier
                                             .size(40.dp)
                                             .clip(CircleShape)
-                                            .background(DesignTokens.Colors.SoftPink.copy(alpha = 0.20f)),
+                                            .background(Color(0xFFFFF0F3))
+                                            .border(1.dp, Color(0xFFFFB3C1), CircleShape),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.WorkspacePremium,
                                             contentDescription = "Milestone",
-                                            tint = DesignTokens.Colors.PrimaryPink,
+                                            tint = DesignTokens.Colors.PrimaryCrimson,
                                             modifier = Modifier.size(20.dp)
                                         )
                                     }
                                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                         Text(
                                             text = title,
-                                            color = DesignTokens.Colors.TextPrimary,
+                                            color = Color(0xFF1D1418),
                                             fontSize = 15.sp,
                                             fontWeight = FontWeight.SemiBold
                                         )

@@ -176,11 +176,10 @@ class RoomNotificationRepository @Inject constructor(
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
-                .setPriority(
-                    if (type == NotificationType.PRESENCE || type == NotificationType.BIRTHDAY_TODAY || type == NotificationType.ANNIVERSARY_TODAY)
-                        NotificationCompat.PRIORITY_HIGH
-                    else NotificationCompat.PRIORITY_DEFAULT
-                )
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setContentIntent(pendingIntent)
                 .build()
 

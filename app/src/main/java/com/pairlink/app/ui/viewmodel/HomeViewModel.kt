@@ -2,6 +2,7 @@ package com.pairlink.app.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pairlink.app.core.haptics.PresenceHapticManager
 import com.pairlink.app.data.repository.AuthRepository
 import com.pairlink.app.data.repository.NotificationRepository
 import com.pairlink.app.data.repository.PairRepository
@@ -16,7 +17,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.Period
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
@@ -25,7 +28,12 @@ data class HomeUiState(
     val user: UserProfile = UserProfile(),
     val heartbeatCount: Int = 0,
     val togetherTimeText: String = "—",
-    val birthdayDaysLeftText: String = "—"
+    val birthdayDaysLeftText: String = "—",
+    val nextMeetingDateText: String = "24 Dec 2026",
+    val nextMeetingRawDate: String = "2026-12-24",
+    val nextMeetingDaysLeft: String = "27",
+    val nextMeetingHoursLeft: String = "14",
+    val nextMeetingMinsLeft: String = "32"
 )
 
 @HiltViewModel
@@ -33,7 +41,8 @@ class HomeViewModel @Inject constructor(
     private val partnerRepository: PartnerRepository,
     private val authRepository: AuthRepository,
     private val pairRepository: PairRepository,
-    private val notificationRepository: NotificationRepository
+    private val notificationRepository: NotificationRepository,
+    private val hapticManager: PresenceHapticManager
 ) : ViewModel() {
 
     val uiState: StateFlow<HomeUiState> = combine(
@@ -41,12 +50,20 @@ class HomeViewModel @Inject constructor(
         authRepository.currentUser,
         partnerRepository.heartPulseCount
     ) { partner, user, heartCount ->
+        val rawMeetingDate = user.nextMeetingStartDate.ifBlank { partner.nextMeetingDate.ifBlank { "2026-12-24" } }
+        val (days, hours, mins, formattedDate) = calculateCountdown(rawMeetingDate)
+
         HomeUiState(
             partner = partner,
             user = user,
             heartbeatCount = heartCount,
             togetherTimeText = calculateTogetherTime(user.relationshipStartDate),
-            birthdayDaysLeftText = calculateBirthdayDaysLeft(partner.dob)
+            birthdayDaysLeftText = calculateBirthdayDaysLeft(partner.dob),
+            nextMeetingDateText = formattedDate,
+            nextMeetingRawDate = rawMeetingDate,
+            nextMeetingDaysLeft = days,
+            nextMeetingHoursLeft = hours,
+            nextMeetingMinsLeft = mins
         )
     }.stateIn(
         scope = viewModelScope,
@@ -55,6 +72,7 @@ class HomeViewModel @Inject constructor(
     )
 
     fun sendHeartPulse() {
+        hapticManager.triggerPulseVibration()
         viewModelScope.launch {
             partnerRepository.sendHeartPulse()
             notificationRepository.addNotification(
@@ -72,6 +90,18 @@ class HomeViewModel @Inject constructor(
             notificationRepository.addNotification(
                 title = "Relationship date updated",
                 message = "Our milestone journey starts from $startDate. ✨",
+                type = NotificationType.ANNIVERSARY_REMINDER
+            )
+            onComplete()
+        }
+    }
+
+    fun saveNextMeetingDate(meetingDate: String, onComplete: () -> Unit = {}) {
+        viewModelScope.launch {
+            pairRepository.saveNextMeetingDate(meetingDate)
+            notificationRepository.addNotification(
+                title = "Next meeting date updated ✈️",
+                message = "Counting down to $meetingDate together! ❤️",
                 type = NotificationType.ANNIVERSARY_REMINDER
             )
             onComplete()
@@ -120,4 +150,29 @@ class HomeViewModel @Inject constructor(
             "Set Date"
         }
     }
+
+    private fun calculateCountdown(targetDateStr: String): Quadruple<String, String, String, String> {
+        return try {
+            val targetDate = LocalDate.parse(targetDateStr)
+            val now = LocalDateTime.now()
+            val targetDateTime = targetDate.atStartOfDay()
+
+            if (targetDateTime.isBefore(now)) {
+                val formatted = targetDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
+                return Quadruple("0", "0", "0", formatted)
+            }
+
+            val totalMinutes = ChronoUnit.MINUTES.between(now, targetDateTime)
+            val days = totalMinutes / (24 * 60)
+            val hours = (totalMinutes % (24 * 60)) / 60
+            val mins = totalMinutes % 60
+            val formatted = targetDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
+
+            Quadruple(days.toString(), hours.toString(), mins.toString(), formatted)
+        } catch (_: Exception) {
+            Quadruple("27", "14", "32", "24 Dec 2026")
+        }
+    }
+
+    private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
 }

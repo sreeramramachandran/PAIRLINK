@@ -55,18 +55,18 @@ export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   };
 
   return (
-    <div className="pt-24 pb-32 px-6 max-w-xl mx-auto flex flex-col gap-6 relative z-10">
+    <div className="pt-20 pb-32 px-4 sm:px-6 max-w-lg mx-auto flex flex-col gap-5 relative z-10">
       {/* Profile Picture Upload */}
-      <section className="flex flex-col items-center gap-3">
+      <section className="flex flex-col items-center gap-2 pt-2">
         <div className="relative group cursor-pointer">
-          <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-[#ffcbd5]/50 shadow-[0_0_30px_rgba(244,167,185,0.4)] relative transition-transform duration-300 group-hover:scale-105">
+          <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-xl p-0.5 bg-white relative transition-transform duration-300 group-hover:scale-105">
             <img
               src={avatarPreview || partner.avatarUrl}
               alt="Profile Picture"
-              className="w-full h-full object-cover"
+              className="w-full h-full rounded-full object-cover"
             />
             <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer">
-              <span className="material-symbols-outlined text-white text-3xl">
+              <span className="material-symbols-outlined text-white text-2xl">
                 photo_camera
               </span>
               <input
@@ -77,13 +77,13 @@ export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
               />
             </label>
           </div>
-          <div className="absolute bottom-0 right-0 bg-[#f4a7b9] text-[#733949] p-2 rounded-full shadow-lg border border-white/20">
-            <span className="material-symbols-outlined text-[16px]">
+          <div className="absolute bottom-0 right-0 bg-[#E60039] text-white p-2 rounded-full shadow-md border-2 border-white">
+            <span className="material-symbols-outlined text-[14px]">
               edit
             </span>
           </div>
         </div>
-        <p className="font-body text-xs text-[#d6c1c5] uppercase tracking-widest font-semibold">
+        <p className="font-body text-[11px] text-[#7A6E73] uppercase tracking-widest font-bold">
           Update Photo
         </p>
       </section>
@@ -91,8 +91,8 @@ export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       {/* Form Fields */}
       <form onSubmit={handleSave} className="flex flex-col gap-4">
         {/* Username */}
-        <div className="glass-card rounded-xl p-5 flex flex-col gap-1.5 shadow-[0_0_20px_rgba(244,167,185,0.2)] bg-white/10 border border-white/20">
-          <label className="font-body text-xs text-[#d6c1c5] font-semibold uppercase tracking-wider">
+        <div className="bg-white/90 backdrop-blur-2xl rounded-3xl p-5 flex flex-col gap-1.5 border border-white/90 shadow-[0_8px_24px_rgba(230,0,57,0.05)]">
+          <label className="font-body text-[10px] text-[#7A6E73] font-bold uppercase tracking-wider">
             Username
           </label>
           <input
@@ -101,13 +101,13 @@ export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             onChange={(e) => setName(e.target.value)}
             placeholder="Your username"
             required
-            className="bg-transparent border-b border-white/20 text-[#dae2fd] font-body text-base py-1.5 glow-input focus:border-b-[#f4a7b9] transition-all"
+            className="w-full bg-white border border-rose-200/80 px-4 py-3 text-sm text-[#2D2226] font-display font-bold rounded-2xl focus:border-[#E60039] outline-none"
           />
         </div>
 
         {/* Partner Nickname */}
-        <div className="glass-card rounded-xl p-5 flex flex-col gap-1.5 shadow-[0_0_20px_rgba(244,167,185,0.2)] bg-white/10 border border-white/20">
-          <label className="font-body text-xs text-[#d6c1c5] font-semibold uppercase tracking-wider">
+        <div className="bg-white/90 backdrop-blur-2xl rounded-3xl p-5 flex flex-col gap-1.5 border border-white/90 shadow-[0_8px_24px_rgba(230,0,57,0.05)]">
+          <label className="font-body text-[10px] text-[#7A6E73] font-bold uppercase tracking-wider">
             Partner Nickname
           </label>
           <input
@@ -116,13 +116,13 @@ export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             onChange={(e) => setNickname(e.target.value)}
             placeholder="What you call them"
             required
-            className="bg-transparent border-b border-white/20 text-[#dae2fd] font-body text-base py-1.5 glow-input focus:border-b-[#f4a7b9] transition-all"
+            className="w-full bg-white border border-rose-200/80 px-4 py-3 text-sm text-[#2D2226] font-display font-bold rounded-2xl focus:border-[#E60039] outline-none"
           />
         </div>
 
         {/* Birthday */}
-        <div className="glass-card rounded-xl p-5 flex flex-col gap-1.5 shadow-[0_0_20px_rgba(244,167,185,0.2)] bg-white/10 border border-white/20">
-          <label className="font-body text-xs text-[#d6c1c5] font-semibold uppercase tracking-wider">
+        <div className="bg-white/90 backdrop-blur-2xl rounded-3xl p-5 flex flex-col gap-1.5 border border-white/90 shadow-[0_8px_24px_rgba(230,0,57,0.05)]">
+          <label className="font-body text-[10px] text-[#7A6E73] font-bold uppercase tracking-wider">
             Birthday
           </label>
           <input
@@ -130,16 +130,16 @@ export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             value={dob}
             onChange={(e) => setDob(e.target.value)}
             required
-            className="bg-transparent border-b border-white/20 text-[#dae2fd] font-body text-base py-1.5 glow-input focus:border-b-[#f4a7b9] transition-all"
+            className="w-full bg-white border border-rose-200/80 px-4 py-3 text-sm text-[#2D2226] font-display font-bold rounded-2xl focus:border-[#E60039] outline-none"
           />
         </div>
 
         {/* Current Mood Chips */}
-        <div className="glass-card rounded-xl p-5 flex flex-col gap-3 shadow-[0_0_20px_rgba(244,167,185,0.2)] bg-white/10 border border-white/20">
-          <label className="font-body text-xs text-[#d6c1c5] font-semibold uppercase tracking-wider">
+        <div className="bg-white/90 backdrop-blur-2xl rounded-3xl p-5 flex flex-col gap-2.5 border border-white/90 shadow-[0_8px_24px_rgba(230,0,57,0.05)]">
+          <label className="font-body text-[10px] text-[#7A6E73] font-bold uppercase tracking-wider">
             Current Mood
           </label>
-          <div className="flex gap-3">
+          <div className="flex gap-2.5">
             {[
               { label: 'Loving', icon: 'favorite' },
               { label: 'Sleepy', icon: 'bedtime' },
@@ -151,20 +151,19 @@ export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                   key={m.label}
                   type="button"
                   onClick={() => setSelectedMood(m.label)}
-                  className={`flex-1 py-2.5 rounded-full border flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                  className={`flex-1 py-2.5 rounded-2xl border flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                     isSel
-                      ? 'border-[#ffcbd5] text-[#ffcbd5] bg-[#ffcbd5]/20 shadow-[0_0_15px_rgba(244,167,185,0.3)] font-semibold'
-                      : 'border-white/15 text-[#d6c1c5] hover:bg-white/5'
+                      ? 'border-[#E60039] text-[#E60039] bg-rose-50 font-bold shadow-xs'
+                      : 'border-rose-200/80 text-[#7A6E73] hover:bg-rose-50/50'
                   }`}
                 >
                   <span
-                    className="material-symbols-outlined text-[18px]"
-                    data-weight={isSel ? 'fill' : 'none'}
+                    className="material-symbols-outlined text-[16px]"
                     style={{ fontVariationSettings: isSel ? "'FILL' 1" : "'FILL' 0" }}
                   >
                     {m.icon}
                   </span>
-                  <span className="font-body text-sm">{m.label}</span>
+                  <span className="font-body text-xs">{m.label}</span>
                 </button>
               );
             })}
@@ -172,8 +171,8 @@ export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         </div>
 
         {/* Status Message */}
-        <div className="glass-card rounded-xl p-5 flex flex-col gap-2 shadow-[0_0_20px_rgba(244,167,185,0.2)] bg-white/10 border border-white/20">
-          <label className="font-body text-xs text-[#d6c1c5] font-semibold uppercase tracking-wider">
+        <div className="bg-white/90 backdrop-blur-2xl rounded-3xl p-5 flex flex-col gap-1.5 border border-white/90 shadow-[0_8px_24px_rgba(230,0,57,0.05)]">
+          <label className="font-body text-[10px] text-[#7A6E73] font-bold uppercase tracking-wider">
             Status Message
           </label>
           <textarea
@@ -181,14 +180,14 @@ export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             onChange={(e) => setStatusMessage(e.target.value)}
             rows={3}
             placeholder="What's on your mind?"
-            className="bg-transparent border border-white/15 rounded-xl text-[#dae2fd] font-body text-sm p-3 glow-input focus:border-[#f4a7b9] transition-all resize-none"
+            className="w-full bg-white border border-rose-200/80 rounded-2xl text-[#2D2226] font-body text-xs p-3 focus:border-[#E60039] outline-none resize-none"
           />
         </div>
 
         {/* Save Button */}
         <button
           type="submit"
-          className="mt-2 w-full bg-[#ffcbd5] text-[#521f2e] font-display font-bold text-base py-4 rounded-full shadow-[0_0_20px_rgba(244,167,185,0.4)] hover:shadow-[0_0_30px_rgba(244,167,185,0.6)] hover:bg-[#ffd9e0] transition-all active:scale-98 cursor-pointer"
+          className="glow-button text-white font-display font-bold text-base py-4 rounded-full flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer mt-1"
         >
           Save Changes
         </button>

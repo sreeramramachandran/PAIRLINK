@@ -42,66 +42,64 @@ export const UpdateStatusScreen: React.FC<UpdateStatusScreenProps> = ({
   };
 
   return (
-    <div className="pt-24 pb-32 px-6 max-w-4xl mx-auto space-y-8 relative z-10">
+    <div className="pt-20 pb-32 px-4 sm:px-6 max-w-lg mx-auto space-y-6 relative z-10">
       {/* Header Section */}
       <section className="text-center pt-2">
-        <h1 className="font-display font-bold text-2xl md:text-3xl text-[#dae2fd] mb-1">
+        <h1 className="font-display font-extrabold text-2xl text-[#2D2226] mb-1">
           Update Status
         </h1>
-        <p className="font-body text-sm text-[#d6c1c5]">
-          Let them know what you're up to.
+        <p className="font-body text-xs text-[#7A6E73] font-medium">
+          Let your partner know what you're up to in real time.
         </p>
       </section>
 
       {/* Current Status Display */}
-      <section className="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] bg-white/10">
-        <div className="w-20 h-20 rounded-full bg-[#ffcbd5]/15 border border-[#ffcbd5]/30 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(244,167,185,0.3)]">
+      <section className="bg-white/90 backdrop-blur-2xl rounded-3xl p-6 flex flex-col items-center justify-center text-center border border-white/90 shadow-[0_10px_30px_rgba(230,0,57,0.07)]">
+        <div className="w-16 h-16 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center mb-3 text-[#E60039] shadow-sm">
           <span
-            className="material-symbols-outlined text-4xl text-[#ffcbd5]"
-            data-weight="fill"
+            className="material-symbols-outlined text-3xl"
             style={{ fontVariationSettings: "'FILL' 1" }}
           >
             work
           </span>
         </div>
-        <h2 className="font-display font-medium text-xl text-[#ffcbd5] mb-1">
+        <h2 className="font-display font-bold text-lg text-[#E60039] mb-0.5">
           Currently {selectedStatus}
         </h2>
-        <p className="font-body text-sm text-[#d6c1c5]">
+        <p className="font-body text-xs text-[#7A6E73] font-medium">
           Updated {lastUpdated}
         </p>
       </section>
 
       {/* Quick Status Grid */}
       <section>
-        <h3 className="font-display font-medium text-lg mb-4 text-[#dae2fd]">
+        <h3 className="font-display font-bold text-sm text-[#2D2226] mb-3">
           Quick Select
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {QUICK_STATUSES.map((item) => {
             const isActive = selectedStatus.toLowerCase() === item.label.toLowerCase();
             return (
               <button
                 key={item.label}
                 onClick={() => handleSelectStatus(item.label)}
-                className={`status-btn glass-card rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer ${
+                className={`bg-white/90 border rounded-2xl p-3.5 flex flex-col items-center justify-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer ${
                   isActive
-                    ? 'active bg-[#f4a7b9]/20 border-[#f4a7b9] shadow-[0_0_15px_rgba(244,167,185,0.3)]'
-                    : 'hover:bg-white/10'
+                    ? 'bg-rose-50 border-[#E60039] shadow-sm text-[#E60039]'
+                    : 'border-white/90 hover:bg-rose-50/50 text-[#2D2226]'
                 }`}
               >
                 <span
-                  className={`material-symbols-outlined text-3xl ${
-                    isActive ? 'text-[#ffcbd5]' : 'text-[#dae2fd]'
+                  className={`material-symbols-outlined text-2xl ${
+                    isActive ? 'text-[#E60039]' : 'text-[#7A6E73]'
                   }`}
-                  data-weight={isActive ? 'fill' : 'none'}
                   style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
                 >
                   {item.icon}
                 </span>
                 <span
-                  className={`font-body text-sm ${
-                    isActive ? 'text-[#ffcbd5] font-semibold' : 'text-[#dae2fd]'
+                  className={`font-body text-xs ${
+                    isActive ? 'text-[#E60039] font-bold' : 'text-[#2D2226] font-medium'
                   }`}
                 >
                   {item.label}
@@ -113,25 +111,23 @@ export const UpdateStatusScreen: React.FC<UpdateStatusScreenProps> = ({
       </section>
 
       {/* Custom Status */}
-      <section className="glass-card rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] bg-white/10">
-        <h3 className="font-display font-medium text-lg mb-4 text-[#dae2fd]">
+      <section className="bg-white/90 backdrop-blur-2xl rounded-3xl p-6 border border-white/90 shadow-[0_10px_30px_rgba(230,0,57,0.07)]">
+        <h3 className="font-display font-bold text-sm text-[#2D2226] mb-3">
           Custom Status
         </h3>
-        <form onSubmit={handleSetCustomStatus} className="flex items-end gap-4">
-          <div className="flex-1">
-            <input
-              type="text"
-              value={customStatusInput}
-              onChange={(e) => setCustomStatusInput(e.target.value)}
-              placeholder="What's on your mind?"
-              className="glass-input w-full pb-2 text-[#dae2fd] font-body text-base placeholder-white/30 bg-transparent border-0 border-b border-white/20 focus:ring-0 focus:border-[#ffcbd5]"
-            />
-          </div>
+        <form onSubmit={handleSetCustomStatus} className="flex items-center gap-3">
+          <input
+            type="text"
+            value={customStatusInput}
+            onChange={(e) => setCustomStatusInput(e.target.value)}
+            placeholder="What's on your mind?"
+            className="flex-1 bg-white border border-rose-200/80 px-4 py-3 text-sm text-[#2D2226] rounded-2xl focus:border-[#E60039] outline-none"
+          />
           <button
             type="submit"
-            className="bg-[#ffcbd5] text-[#521f2e] px-6 py-2.5 rounded-full font-body text-xs font-bold uppercase tracking-wider hover:bg-[#ffd9e0] transition-opacity shadow-[0_0_15px_rgba(244,167,185,0.4)] cursor-pointer"
+            className="glow-button px-5 py-3 rounded-2xl font-display font-bold text-xs whitespace-nowrap cursor-pointer active:scale-95"
           >
-            Set
+            Update
           </button>
         </form>
       </section>

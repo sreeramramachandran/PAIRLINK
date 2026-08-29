@@ -1,12 +1,14 @@
 package com.pairlink.app.core.notifications
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 
 /**
- * Creates and maintains all distinct Android Notification Channels for PairLink.
+ * Creates and maintains all distinct Android Notification Channels for PairLink
+ * with explicit Notification.VISIBILITY_PUBLIC for 100% lock-screen display.
  */
 object NotificationChannelsHelper {
 
@@ -32,6 +34,7 @@ object NotificationChannelsHelper {
                 description = "Live touch and heartbeat presence signals from your partner."
                 enableLights(true)
                 enableVibration(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
                 vibrationPattern = longArrayOf(0, 130, 90, 220, 550)
             },
             NotificationChannel(
@@ -42,22 +45,27 @@ object NotificationChannelsHelper {
                 description = "Pair requests, connection status, and sanctuary pairing alerts."
                 enableLights(true)
                 enableVibration(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             },
             NotificationChannel(
                 CHANNEL_MOOD,
                 "Mood Updates",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "Emotional updates when your partner shares a new mood."
                 enableLights(true)
+                enableVibration(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             },
             NotificationChannel(
                 CHANNEL_STATUS,
                 "Activity Status",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "Activity and 'Reached Home' safety updates from your partner."
                 enableLights(true)
+                enableVibration(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             },
             NotificationChannel(
                 CHANNEL_BIRTHDAY,
@@ -67,6 +75,7 @@ object NotificationChannelsHelper {
                 description = "Meaningful reminders counting down to your partner's special day."
                 enableLights(true)
                 enableVibration(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             },
             NotificationChannel(
                 CHANNEL_ANNIVERSARY,
@@ -76,13 +85,16 @@ object NotificationChannelsHelper {
                 description = "Anniversary countdowns and relationship milestone celebrations."
                 enableLights(true)
                 enableVibration(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             },
             NotificationChannel(
                 CHANNEL_SYSTEM,
                 "System & Sanctuary",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "General sanctuary and account notifications."
+                enableLights(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             }
         )
 

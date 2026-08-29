@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background_midnight">#0B1326</color>
-    <color name="primary_pink">#FFCBD5</color>
-    <color name="secondary_lavender">#DFBBE4</color>
+    <color name="background_midnight">#FAF5F5</color>
+    <color name="primary_pink">#E60039</color>
+    <color name="secondary_lavender">#FFF0F3</color>
 </resources>

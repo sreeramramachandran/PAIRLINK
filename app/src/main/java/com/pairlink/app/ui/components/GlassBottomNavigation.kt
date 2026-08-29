@@ -16,6 +16,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,16 +26,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.ChatBubble
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Mood
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.outlined.ChatBubble
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Mood
-import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -58,11 +58,13 @@ enum class BottomNavTab {
     HOME,
     MOOD,
     UPDATES,
+    MEMORIES,
     SETTINGS
 }
 
 /**
- * Reusable Floating Capsule Bottom Navigation Bar for PairLink with dynamic unread badge count.
+ * Reusable Floating Capsule Bottom Navigation Bar for PairLink.
+ * Matches reference UI with white capsule and center raised crimson heart button.
  */
 @Composable
 fun GlassBottomNavigation(
@@ -74,67 +76,91 @@ fun GlassBottomNavigation(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 28.dp, vertical = 20.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         contentAlignment = Alignment.Center
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth(0.92f)
+                .fillMaxWidth()
                 .height(64.dp)
                 .shadow(
-                    elevation = 20.dp,
+                    elevation = 16.dp,
                     shape = RoundedCornerShape(DesignTokens.Radius.Full),
-                    ambientColor = Color.Black.copy(alpha = 0.5f),
-                    spotColor = DesignTokens.Colors.SoftPink.copy(alpha = 0.35f)
+                    ambientColor = Color(0xFFE60039).copy(alpha = 0.15f),
+                    spotColor = Color.Black.copy(alpha = 0.08f)
                 )
                 .clip(RoundedCornerShape(DesignTokens.Radius.Full))
-                .background(Color.White.copy(alpha = 0.12f))
+                .background(Color.White.copy(alpha = 0.95f))
                 .border(
-                    border = BorderStroke(
-                        width = 1.dp,
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.White.copy(alpha = 0.35f),
-                                Color.White.copy(alpha = 0.15f)
-                            )
-                        )
-                    ),
+                    border = BorderStroke(width = 1.dp, color = Color.White),
                     shape = RoundedCornerShape(DesignTokens.Radius.Full)
                 )
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
+            // 1. Home
             NavTabItem(
+                label = "Home",
                 selected = currentTab == BottomNavTab.HOME,
                 selectedIcon = Icons.Filled.Home,
                 unselectedIcon = Icons.Outlined.Home,
-                contentDescription = "Home Sanctuary",
                 onClick = { onTabSelected(BottomNavTab.HOME) }
             )
 
+            // 2. Chat
             NavTabItem(
-                selected = currentTab == BottomNavTab.MOOD,
-                selectedIcon = Icons.Filled.Mood,
-                unselectedIcon = Icons.Outlined.Mood,
-                contentDescription = "Mood & Status",
-                onClick = { onTabSelected(BottomNavTab.MOOD) }
-            )
-
-            NavTabItem(
+                label = "Chat",
                 selected = currentTab == BottomNavTab.UPDATES,
-                selectedIcon = Icons.Filled.Notifications,
-                unselectedIcon = Icons.Outlined.Notifications,
-                contentDescription = "Updates & Notification Center",
+                selectedIcon = Icons.Filled.ChatBubble,
+                unselectedIcon = Icons.Outlined.ChatBubble,
                 badgeCount = unreadNotificationsCount,
                 onClick = { onTabSelected(BottomNavTab.UPDATES) }
             )
 
+            // 3. Center Raised Floating Heart Action Button
+            Box(
+                modifier = Modifier
+                    .offset(y = (-14).dp)
+                    .size(52.dp)
+                    .shadow(12.dp, CircleShape, spotColor = Color(0xFFE60039).copy(alpha = 0.4f))
+                    .clip(CircleShape)
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(Color(0xFFFF3366), Color(0xFFE60039))
+                        )
+                    )
+                    .border(3.5.dp, Color(0xFFFAF5F5), CircleShape)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = ripple(color = Color.White),
+                        onClick = { onTabSelected(BottomNavTab.MOOD) }
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "Express Love",
+                    tint = Color.White,
+                    modifier = Modifier.size(26.dp)
+                )
+            }
+
+            // 4. Memories
             NavTabItem(
+                label = "Memories",
+                selected = currentTab == BottomNavTab.MEMORIES,
+                selectedIcon = Icons.Filled.PhotoLibrary,
+                unselectedIcon = Icons.Outlined.PhotoLibrary,
+                onClick = { onTabSelected(BottomNavTab.MEMORIES) }
+            )
+
+            // 5. Profile
+            NavTabItem(
+                label = "Profile",
                 selected = currentTab == BottomNavTab.SETTINGS,
-                selectedIcon = Icons.Filled.Settings,
-                unselectedIcon = Icons.Outlined.Settings,
-                contentDescription = "Settings & Profile",
+                selectedIcon = Icons.Filled.Person,
+                unselectedIcon = Icons.Outlined.Person,
                 onClick = { onTabSelected(BottomNavTab.SETTINGS) }
             )
         }
@@ -143,88 +169,64 @@ fun GlassBottomNavigation(
 
 @Composable
 private fun NavTabItem(
+    label: String,
     selected: Boolean,
     selectedIcon: ImageVector,
     unselectedIcon: ImageVector,
-    contentDescription: String,
     badgeCount: Int = 0,
     onClick: () -> Unit
 ) {
-    val scale by animateFloatAsState(
-        targetValue = if (selected) 1.12f else 1f,
-        animationSpec = spring(dampingRatio = 0.6f, stiffness = 400f),
-        label = "NavTabScale"
-    )
-
     val tint by animateColorAsState(
-        targetValue = if (selected) DesignTokens.Colors.PrimaryPink else DesignTokens.Colors.TextSecondary,
+        targetValue = if (selected) DesignTokens.Colors.PrimaryCrimson else DesignTokens.Colors.TextSecondary,
         label = "NavTabTint"
     )
 
-    val backgroundBrush = if (selected) {
-        Brush.radialGradient(
-            colors = listOf(
-                DesignTokens.Colors.PrimaryPink.copy(alpha = 0.30f),
-                Color.Transparent
-            )
-        )
-    } else {
-        SolidColorBrush(Color.Transparent)
-    }
-
-    // Bouncing badge animation
-    val infiniteTransition = rememberInfiniteTransition(label = "BadgeBounce")
-    val badgeBounceScale by infiniteTransition.animateFloat(
-        initialValue = 1.0f,
-        targetValue = 1.18f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 800, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "BadgeScale"
-    )
-
-    Box(
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .size(48.dp)
-            .scale(scale)
             .clip(CircleShape)
-            .background(backgroundBrush)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(bounded = true, color = DesignTokens.Colors.PrimaryPink),
+                indication = null,
                 onClick = onClick
-            ),
-        contentAlignment = Alignment.Center
+            )
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
-        Icon(
-            imageVector = if (selected) selectedIcon else unselectedIcon,
-            contentDescription = contentDescription,
-            tint = tint,
-            modifier = Modifier.size(24.dp)
-        )
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = if (selected) selectedIcon else unselectedIcon,
+                contentDescription = label,
+                tint = tint,
+                modifier = Modifier.size(22.dp)
+            )
 
-        // Unread Badge
-        if (badgeCount > 0) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = 2.dp, y = (-2).dp)
-                    .scale(badgeBounceScale)
-                    .size(16.dp)
-                    .clip(CircleShape)
-                    .background(DesignTokens.Colors.DangerRose),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = if (badgeCount > 9) "9+" else badgeCount.toString(),
-                    color = Color.White,
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.Bold
-                )
+            if (badgeCount > 0) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = 4.dp, y = (-4).dp)
+                        .size(14.dp)
+                        .clip(CircleShape)
+                        .background(DesignTokens.Colors.PrimaryCrimson),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (badgeCount > 9) "9+" else badgeCount.toString(),
+                        color = Color.White,
+                        fontSize = 8.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
+
+        Text(
+            text = label,
+            fontSize = 9.sp,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+            color = tint,
+            modifier = Modifier.padding(top = 2.dp)
+        )
     }
 }
-
-private fun SolidColorBrush(color: Color): Brush = Brush.linearGradient(listOf(color, color))

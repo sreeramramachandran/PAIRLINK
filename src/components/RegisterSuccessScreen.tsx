@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ScreenType } from '../types';
+import { PairLinkLogo } from './PairLinkLogo';
 
 interface RegisterSuccessScreenProps {
   username: string;
@@ -23,37 +24,25 @@ export const RegisterSuccessScreen: React.FC<RegisterSuccessScreenProps> = ({
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 relative z-10">
-      {/* Ambient glowing radiance */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] max-w-[600px] max-h-[600px] bg-[#ffcbd5]/20 rounded-full animate-radiance -z-10 pointer-events-none" />
-
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto my-auto py-12">
-        {/* Celebration Icon */}
-        <div className="mb-6 animate-enter">
-          <div className="w-24 h-24 rounded-full bg-white/20 border border-white/20 backdrop-blur-2xl flex items-center justify-center shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]">
-            <span
-              className="material-symbols-outlined text-[#ffcbd5] text-5xl"
-              data-weight="fill"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              favorite
-            </span>
-          </div>
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto py-12">
+        {/* Logo */}
+        <div className="mb-6">
+          <PairLinkLogo size="lg" showTagline={true} />
         </div>
 
         {/* Greeting */}
-        <h1 className="font-display font-bold text-3xl md:text-5xl text-center mb-6 bg-gradient-to-br from-[#ffcbd5] to-[#dfbbe4] bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-          Welcome, {username || 'Alex'}!
+        <h1 className="font-display font-extrabold text-2xl sm:text-3xl text-center mb-6 text-[#2D2226]">
+          Welcome, <span className="text-[#E60039]">{username || 'Alex'}</span>!
         </h1>
 
         {/* Partner ID Glass Card */}
-        <div className="w-full backdrop-blur-2xl border border-white/20 rounded-[24px] p-8 flex flex-col items-center gap-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] mb-8 relative overflow-hidden bg-white/10">
-          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-          <span className="font-body text-xs text-[#d6c1c5] uppercase tracking-wider font-semibold">
-            Your Partner ID
+        <div className="w-full bg-white/90 backdrop-blur-2xl border border-white/90 rounded-3xl p-7 flex flex-col items-center gap-5 shadow-[0_16px_40px_rgba(230,0,57,0.1),0_4px_16px_rgba(0,0,0,0.04)] mb-8 text-center">
+          <span className="font-body text-xs text-[#7A6E73] uppercase tracking-wider font-bold">
+            Your Unique Partner ID
           </span>
 
-          <div className="flex items-center justify-center gap-4 w-full">
-            <span className="font-display text-2xl md:text-3xl text-[#dae2fd] tracking-wider font-bold">
+          <div className="flex items-center justify-center gap-3 w-full bg-rose-50/70 border border-rose-200/80 rounded-2xl py-3 px-5">
+            <span className="font-display text-xl sm:text-2xl text-[#E60039] tracking-wider font-extrabold">
               {partnerId}
             </span>
 
@@ -61,19 +50,19 @@ export const RegisterSuccessScreen: React.FC<RegisterSuccessScreenProps> = ({
             <button
               onClick={copyId}
               aria-label="Copy Partner ID"
-              className={`w-12 h-12 flex items-center justify-center rounded-full border transition-all duration-300 backdrop-blur-2xl active:scale-95 ${
+              className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all duration-300 active:scale-95 cursor-pointer ${
                 copied
-                  ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300'
-                  : 'bg-white/20 border-white/20 text-[#ffcbd5] hover:bg-white/30'
+                  ? 'bg-emerald-500 text-white border-emerald-500 shadow-md'
+                  : 'bg-white text-[#E60039] border-rose-200 hover:bg-rose-50 shadow-sm'
               }`}
             >
-              <span className="material-symbols-outlined text-[20px]">
+              <span className="material-symbols-outlined text-[18px]">
                 {copied ? 'check' : 'content_copy'}
               </span>
             </button>
           </div>
 
-          <p className="font-body text-sm text-[#d6c1c5]/80 text-center max-w-[280px]">
+          <p className="font-body text-xs text-[#7A6E73] font-medium max-w-[280px]">
             Share this secure code with your partner to link your sanctuaries.
           </p>
         </div>
@@ -82,13 +71,11 @@ export const RegisterSuccessScreen: React.FC<RegisterSuccessScreenProps> = ({
         <div className="w-full">
           <button
             onClick={() => onNavigate('connect')}
-            className="w-full bg-[#ffcbd5] text-[#521f2e] font-display font-medium text-lg py-4 rounded-full shadow-[0_0_24px_rgba(244,167,185,0.4)] hover:shadow-[0_0_32px_rgba(244,167,185,0.7)] hover:bg-[#ffd9e0] transition-all duration-300 active:scale-[0.98] relative overflow-hidden group border border-white/20"
+            className="w-full glow-button text-white font-display font-bold text-base py-4 rounded-full flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
           >
-            <span className="relative z-10 flex items-center justify-center gap-2 font-bold">
-              Connect With Partner
-              <span className="material-symbols-outlined text-[20px]">
-                arrow_forward
-              </span>
+            <span>Connect With Partner</span>
+            <span className="material-symbols-outlined text-[20px]">
+              arrow_forward
             </span>
           </button>
         </div>

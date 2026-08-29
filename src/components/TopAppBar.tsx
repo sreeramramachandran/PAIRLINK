@@ -25,62 +25,82 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({
   titleOverride,
 }) => {
   return (
-    <header className="fixed top-0 left-0 w-full z-40 backdrop-blur-2xl bg-white/10 border-b border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300">
-      <div className="max-w-2xl mx-auto flex justify-between items-center px-6 py-3.5">
-        {/* Leading: Back Button or Partner Avatar */}
+    <header className="fixed top-0 left-0 w-full z-40 backdrop-blur-2xl bg-white/70 border-b border-white/80 shadow-[0_4px_20px_rgba(230,0,57,0.04)] transition-all duration-300">
+      <div className="max-w-2xl mx-auto flex justify-between items-center px-5 py-3">
+        {/* Leading: Back Button or Greeting Header */}
         <div className="flex items-center gap-3">
           {showBack ? (
-            <button
-              onClick={onBack}
-              className="text-[#dae2fd] hover:text-[#ffcbd5] transition-colors p-1.5 rounded-full hover:bg-white/10 active:scale-95"
-              aria-label="Go back"
-            >
-              <span className="material-symbols-outlined text-[24px]">arrow_back</span>
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={onBack}
+                className="text-[#2D2226] hover:text-[#E60039] transition-colors p-2 rounded-full bg-white shadow-md border border-white/90 active:scale-95 flex items-center justify-center"
+                aria-label="Go back"
+              >
+                <span className="material-symbols-outlined text-[22px]">arrow_back</span>
+              </button>
+              <h1 className="font-display font-extrabold text-[20px] text-[#2D2226] tracking-tight">
+                {titleOverride || 'PairLink'}
+              </h1>
+            </div>
           ) : (
-            <button
-              onClick={() => onNavigate('profile')}
-              className="relative flex items-center justify-center group cursor-pointer"
-              title="View Profile"
-            >
-              <div className="w-10 h-10 rounded-full overflow-hidden border border-white/30 shadow-[0_0_12px_rgba(255,203,213,0.3)] group-hover:border-[#ffcbd5] transition-colors">
-                <img
-                  src={partnerAvatar}
-                  alt={partnerName}
-                  className="w-full h-full object-cover"
-                />
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-[#E60039]">
+                <span>Good Evening,</span>
+                <span className="text-sm">👋</span>
               </div>
-              {isPartnerOnline && (
-                <div
-                  className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-[#0b1326] shadow-[0_0_8px_rgba(52,211,153,0.8)]"
-                  title="Online"
-                />
-              )}
-            </button>
+              <h1 className="font-display font-extrabold text-[19px] sm:text-[21px] text-[#2D2226] tracking-tight leading-tight flex items-center gap-1.5">
+                <span>{titleOverride || `${partnerName} & Chakkara`}</span>
+                <span className="text-[#E60039] text-base">❤️</span>
+              </h1>
+              <p className="text-[11px] text-[#7A6E73] font-medium hidden sm:block">
+                Miles apart, but always close at heart. ❤️
+              </p>
+            </div>
           )}
-
-          <h1 className="font-display font-bold text-[20px] text-[#ffcbd5] tracking-tight">
-            {titleOverride || 'PairLink'}
-          </h1>
         </div>
 
-        {/* Trailing: Heart button with animation */}
-        <button
-          onClick={onSendHeart}
-          className="text-[#ffcbd5] hover:opacity-80 transition-all active:scale-90 p-2 rounded-full hover:bg-white/10 relative group"
-          title="Send Love Burst"
-        >
-          <span
-            className="material-symbols-outlined text-[24px]"
-            data-weight="fill"
-            style={{ fontVariationSettings: "'FILL' 1" }}
+        {/* Trailing: Action Icons matching Reference (Notifications, Calendar, Avatar) */}
+        <div className="flex items-center gap-2.5">
+          {/* Notification Bell Button */}
+          <button
+            onClick={() => onNavigate('updates')}
+            className="relative w-10 h-10 rounded-full bg-white shadow-sm border border-white/90 flex items-center justify-center text-[#4A3E43] hover:text-[#E60039] hover:shadow-md transition-all active:scale-95"
+            title="Notifications & Updates"
           >
-            favorite
-          </span>
-          <span className="absolute -bottom-8 right-0 bg-white/20 backdrop-blur-md text-[10px] text-[#ffcbd5] px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">
-            Send Heart
-          </span>
-        </button>
+            <span className="material-symbols-outlined text-[20px]">notifications</span>
+            <span className="absolute top-2 right-2 w-2 h-2 bg-[#E60039] rounded-full ring-2 ring-white" />
+          </button>
+
+          {/* Calendar Button */}
+          <button
+            onClick={() => onNavigate('birthday')}
+            className="w-10 h-10 rounded-full bg-white shadow-sm border border-white/90 flex items-center justify-center text-[#4A3E43] hover:text-[#E60039] hover:shadow-md transition-all active:scale-95"
+            title="Special Dates & Wishlist"
+          >
+            <span className="material-symbols-outlined text-[20px]">calendar_month</span>
+          </button>
+
+          {/* Profile Avatar with Online Ring */}
+          <button
+            onClick={() => onNavigate('profile')}
+            className="relative flex items-center justify-center cursor-pointer group active:scale-95 transition-transform ml-1"
+            title="View Profile"
+          >
+            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md group-hover:border-[#E60039] transition-colors">
+              <img
+                src={partnerAvatar}
+                alt={partnerName}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {isPartnerOnline && (
+              <div
+                className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white shadow-sm"
+                title="Online"
+              />
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );
